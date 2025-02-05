@@ -4,24 +4,30 @@ import axios from "axios";
 function Home() {
   const [message, setMessage] = useState("");
 
+  const token = localStorage.getItem("accessToken");
+
+  //Test to show the jwt decorator is working from auth_views
   useEffect(() => {
     axios
-      .get("http://localhost:8000/test")
+      .get("http://localhost:8000/protected_view", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         if (response.status === 200) {
           setMessage(response.data.message);
-          console.log(response.data.obj);
         }
       })
       .catch((error) => {
-        setMessage("Failed to connect to server");
+        setMessage("Not manage to authenticate user");
         console.error(error);
       });
-  }, []);
+  }, [token]);
 
   return (
     <div>
-      <pre>{message}</pre>
+      <div>{message}</div>
     </div>
   );
 }

@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Login.css";
+import { UserContext } from "../../../context/UserContext";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
 
+  const { user, setUser } = useContext(UserContext);
+  const nav = useNavigate();
+
   useEffect(() => {
-    // Fetch the CSRF token from Django
     axios
       .get("http://localhost:8000/csrf", { withCredentials: true })
       .then(() => setCsrfToken(Cookies.get("csrftoken")))
@@ -19,7 +23,6 @@ export default function LoginForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(csrfToken);
 
     axios
       .post(
@@ -31,7 +34,17 @@ export default function LoginForm() {
         }
       )
       .then((response) => {
-        console.log("[DEBUG] Logging in with: ", response.data.user);
+        console.log(response.status);
+        if (response.status === 200) {
+          localStorage.setItem("accessToken", response.data.access);
+          localStorage.setItem("refreshToken", response.data.refresh);
+
+          setUser(response.data.user); // Save the user info in context
+
+          nav("/settings");
+        } else {
+          console.log(`tatus:${response.status}: Wrong`);
+        }
       })
       .catch((error) => {
         console.log("Error ", error);

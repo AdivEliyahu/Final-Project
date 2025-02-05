@@ -3,3 +3,4 @@ djangorestframework>=3.14.0
 django-cors-headers>=4.6.0
 python-dotenv>=1.0.1
 pymongo>=4.11
+djangorestframework_simplejwt>=5.4.0
