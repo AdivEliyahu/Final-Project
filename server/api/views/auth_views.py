@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET,require_POST
 import os
+import json
 import certifi
 
 from pymongo import MongoClient
@@ -13,22 +14,26 @@ from db_connection import db
 load_dotenv()
 
 ca = certifi.where()
-
 @require_GET
-def test(request):
-    users_collection = db['users']
+def set_csrf_token(request):
+    from django.middleware.csrf import get_token
+    return JsonResponse({"csrfToken": get_token(request)})
 
-    records = {"name": "Ned Stark"}
-    
+
+@require_POST
+def login(request): 
+    users_collection = db['users']
+    data = json.loads(request.body)
+    records = { 
+        "email" : data.get('email'),
+        "password" : data.get('password')
+    }
+    print(records)
     try:
         user = users_collection.find_one(records)
         if user:
             user['_id'] = str(user['_id'])  
-        return JsonResponse({"obj": user}, status=200)
+            print(user)
+        return JsonResponse({"user": user}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-
-
-
-
-

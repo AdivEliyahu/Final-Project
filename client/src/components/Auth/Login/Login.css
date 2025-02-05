@@ -1,0 +1,101 @@
+/* Main container styling */
+body {
+  background-color: #fbf8ef; /* Light cream background */
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.form-wrapper {
+  width: 100%;
+  padding: 2rem;
+  background-color: #fbf8ef; /* Light blue background */
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInSlideDown 0.5s ease-in-out;
+}
+
+/* Title styling */
+h2 {
+  color: #78b3ce; /* Main blue color */
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+/* Form field styling */
+.input-field {
+  width: 80%;
+  padding: 12px 16px;
+  margin-bottom: 1rem;
+  border: 2px solid #78b3ce; /* Blue border */
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fbf8ef; /* Light cream background */
+  color: #333;
+  transition: all 0.3s ease-in-out;
+}
+
+.input-field:focus {
+  border-color: #f96e2a; /* Orange color when focused */
+  outline: none;
+}
+
+/* Submit button styling */
+.submit-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #f96e2a; /* Orange background */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.submit-btn:hover {
+  background-color: #78b3ce; /* Blue background on hover */
+}
+
+.submit-btn:focus {
+  outline: none;
+}
+
+/* Link styling */
+.link {
+  color: #f96e2a; /* Orange link color */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Footer text */
+.footer-text {
+  color: #333;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive styles */
+@keyframes fadeInSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -9,7 +9,7 @@ function Home() {
       .get("http://localhost:8000/test")
       .then((response) => {
         if (response.status === 200) {
-          setMessage(JSON.stringify(response.data.obj, null, 2));
+          setMessage(response.data.message);
           console.log(response.data.obj);
         }
       })
