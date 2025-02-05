@@ -52,7 +52,7 @@ def jwt_required(view_func):
         token = auth_header.split(" ")[1]
         try:
             payload = jwt.decode(token, os.environ.get('JWT_SECRET'), algorithms=["HS256"])
-            request.user = payload  # Store the decoded JWT payload in the request
+            request.user = payload  
         except jwt.ExpiredSignatureError:
             return JsonResponse({"error": "Token has expired"}, status=401)
         except jwt.InvalidTokenError:
@@ -108,7 +108,7 @@ def get_user(request):
     access_token = request.headers.get("Authorization")
 
     try:
-        payload = decode_jwt(access_token)  # Decode and validate JWT
+        payload = decode_jwt(access_token)  
         user_id = payload.get("user_id")
 
         if not user_id:
@@ -120,7 +120,7 @@ def get_user(request):
         if not user:
             return JsonResponse({"error": "User not found"}, status=404)
 
-        user['_id'] = str(user['_id'])  # Convert ObjectId to string
+        user['_id'] = str(user['_id'])  
         print('get_user func: ' + user['name'])
 
         return JsonResponse({"user": user}, status=200)

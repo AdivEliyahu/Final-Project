@@ -39,9 +39,9 @@ export default function LoginForm() {
           localStorage.setItem("accessToken", response.data.access);
           localStorage.setItem("refreshToken", response.data.refresh);
 
-          setUser(response.data.user); // Save the user info in context
+          setUser(response.data.user);
 
-          nav("/settings");
+          nav("/settings"); // Change that later - just for debug
         } else {
           console.log(`tatus:${response.status}: Wrong`);
         }
