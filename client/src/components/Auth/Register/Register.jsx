@@ -31,9 +31,11 @@ export default function RegisterForm() {
       setConfirmPassword("");
       setPassword("");
       setError("Passwords do not match.");
+      alert("Passwords do not match. TODO: Show error message in the UI.");
     } else if (password.length < 3) {
       setPassword("");
       setConfirmPassword("");
+      alert("Password must be at least 3 characters long.");
     } else {
       axios
         .post(
