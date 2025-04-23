@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Home() {
   const [message, setMessage] = useState("");
 
   const token = localStorage.getItem("accessToken");
+  const nav = useNavigate();
 
   //Test to show the jwt decorator is working from auth_views
   useEffect(() => {
@@ -21,9 +23,10 @@ function Home() {
       })
       .catch((error) => {
         setMessage("Not manage to authenticate user");
+        nav("/login");
         console.error(error);
       });
-  }, [token]);
+  }, [token, nav]);
 
   return (
     <div>

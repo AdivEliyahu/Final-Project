@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Login.css";
+import Navbar from "../../shared/Navbar";
+import Footer from "../../shared/Footer";
 import { UserContext } from "../../../context/UserContext";
 
 export default function LoginForm() {
@@ -43,7 +44,7 @@ export default function LoginForm() {
 
           nav("/settings"); // Change that later - just for debug
         } else {
-          console.log(`tatus:${response.status}: Wrong`);
+          console.log(`Status:${response.status}: Wrong`);
         }
       })
       .catch((error) => {
@@ -52,15 +53,15 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="container">
-      <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+    <div className="page">
+      <Navbar />
+      <div className="container">
+        <div className="logo-section">
+          <img src="/assets/Anonify_Logo.png" alt="Logo" className="logo-img" />
+        </div>
         <div className="form-wrapper">
-          <h2>Login</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <h1>Login</h1>
+          <form onSubmit={handleSubmit} className="input-fields">
             <div className="relative">
               <input
                 type="email"
@@ -92,7 +93,8 @@ export default function LoginForm() {
             </a>
           </p>
         </div>
-      </motion.div>
+      </div>
+      <Footer />
     </div>
   );
 }

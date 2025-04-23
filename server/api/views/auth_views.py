@@ -102,6 +102,37 @@ def login(request):
 
     return JsonResponse({"error": "Invalid credentials"}, status=401)
 
+@require_POST
+def register(request):
+    data = json.loads(request.body)
+    users_collection = db['users']
+
+    if users_collection.find_one({"email": data.get('email')}):
+        return JsonResponse({"error": "Email already exists"}, status=400)
+
+    new_user = {
+        "name": data.get('name'),
+        "email": data.get('email'),
+        "password": data.get('password')
+    }
+
+    result = users_collection.insert_one(new_user)
+    new_user['_id'] = str(result.inserted_id)  
+
+    payload = {
+        "user_id": new_user["_id"],
+        "email": new_user["email"]
+    }
+
+    access_token = create_jwt(payload, expires_in=120)  
+    refresh_token = create_jwt(payload, expires_in=1440)  
+
+    return JsonResponse({
+        "user": new_user,
+        "access": access_token,
+        "refresh": refresh_token
+    }, status=201)
+
 @csrf_exempt
 @require_GET
 def get_user(request): 

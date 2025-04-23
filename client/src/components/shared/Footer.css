@@ -1,0 +1,15 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-top: 1px solid #ccc;
+  font-size: 0.75rem;
+  color: white;
+  background-color: #006d77;
+}
+.footer-links a {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: inherit;
+}
