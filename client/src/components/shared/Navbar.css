@@ -9,6 +9,7 @@
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
+  cursor: pointer;
 }
 .nav-links {
   display: flex;
@@ -16,11 +17,12 @@
   font-size: 1rem;
 }
 
-.nav-links a {
+.nav-links .link {
   text-decoration: none;
   list-style-type: none;
   color: white;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .nav-links li {

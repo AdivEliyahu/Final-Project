@@ -1,11 +1,12 @@
 import React from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 import "./Navbar.css";
 
 export default function Navbar() {
-  const { user, setUser, logout } = useAuth();
+  const { user, logout } = useAuth();
   const nav = useNavigate();
   const handleNav = (path) => {
     nav(path);
@@ -34,19 +35,29 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="logo">Anonify</div>
+      <div className="logo" onClick={() => nav("/")}>
+        Anonify
+      </div>
       <ul className="nav-links">
         <li>
-          <a href="#">Anonymizer</a>
+          <Link className="link" to="/">
+            Anonymizer
+          </Link>
         </li>
         <li>
-          <a href="#">Features</a>
+          <Link className="link" to="/">
+            Home
+          </Link>
         </li>
         <li>
-          <a href="#">About</a>
+          <Link className="link" to="/">
+            About
+          </Link>
         </li>
         <li>
-          <a href="#">F.A.Q.</a>
+          <Link className="link" to="/">
+            F.A.Q
+          </Link>
         </li>
       </ul>
       <div className="nav-buttons">
