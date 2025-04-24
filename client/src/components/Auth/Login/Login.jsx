@@ -52,9 +52,9 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="page">
+    <>
       <ToastContainer />
-      <div className="container">
+      <div className="login-container">
         <div className="logo-section">
           <img src="/assets/Anonify_Logo.png" alt="Logo" className="logo-img" />
         </div>
@@ -93,6 +93,6 @@ export default function LoginForm() {
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }

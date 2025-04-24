@@ -1,13 +1,9 @@
-.page {
-  width: 100%;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8vh;
 }
-body {
-  background-color: #fbf8ef; /* Light cream background */
-  font-family: "Arial", sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
 .container {
   grid-template-columns: 1fr 1fr;
   flex-grow: 1;

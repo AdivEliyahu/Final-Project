@@ -80,9 +80,9 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="page">
+    <>
       <ToastContainer />
-      <main className="main-content">
+      <main>
         <div className="signup-container">
           <div className="logo-section">
             <img
@@ -146,6 +146,6 @@ export default function RegisterForm() {
           </div>
         </div>
       </main>
-    </div>
+    </>
   );
 }
