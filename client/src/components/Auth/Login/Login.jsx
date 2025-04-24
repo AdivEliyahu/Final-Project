@@ -3,9 +3,8 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Login.css";
-import Navbar from "../../shared/Navbar";
-import Footer from "../../shared/Footer";
 import { UserContext } from "../../../context/UserContext";
+import { ToastContainer } from "react-toastify";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -42,7 +41,7 @@ export default function LoginForm() {
 
           setUser(response.data.user);
 
-          nav("/settings"); // Change that later - just for debug
+          nav("/"); // Change that later - just for debug
         } else {
           console.log(`Status:${response.status}: Wrong`);
         }
@@ -54,7 +53,7 @@ export default function LoginForm() {
 
   return (
     <div className="page">
-      <Navbar />
+      <ToastContainer />
       <div className="container">
         <div className="logo-section">
           <img src="/assets/Anonify_Logo.png" alt="Logo" className="logo-img" />
@@ -94,7 +93,6 @@ export default function LoginForm() {
           </p>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

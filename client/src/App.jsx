@@ -5,18 +5,27 @@ import Login from "./components/Auth/Login/Login";
 import UserSettings from "./components/UserManagement/UserSettings/UserSettings";
 import Register from "./components/Auth/Register/Register";
 import ProtectedRoute from "./context/ProtectedRoute";
+import Navbar from "./components/shared/Navbar";
+import Footer from "./components/shared/Footer";
+import "./App.css";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/Register" element={<Register />} />
-      <Route
-        path="/settings"
-        element={<ProtectedRoute element={<UserSettings />} />}
-      />
-    </Routes>
+    <div className="page">
+      <Navbar />
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/Register" element={<Register />} />
+          <Route
+            path="/settings"
+            element={<ProtectedRoute element={<UserSettings />} />}
+          />
+        </Routes>
+      </div>
+      <Footer />
+    </div>
   );
 };
 

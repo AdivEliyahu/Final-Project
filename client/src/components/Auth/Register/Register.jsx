@@ -3,19 +3,32 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Register.css";
-import Navbar from "../../shared/Navbar";
-import Footer from "../../shared/Footer";
 import { UserContext } from "../../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
-  const [error, setError] = useState("");
 
   const { setUser } = useContext(UserContext);
   const nav = useNavigate();
+  const notify = (
+    message = "Oh Sanp! Something went wrong :(",
+    type = "error"
+  ) => {
+    toast[type](message, {
+      position: "bottom-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
 
   useEffect(() => {
     axios
@@ -25,17 +38,16 @@ export default function RegisterForm() {
   }, []);
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
+    e.preventDefault();
 
     if (password !== confirmPassword) {
       setConfirmPassword("");
       setPassword("");
-      setError("Passwords do not match.");
-      alert("Passwords do not match. TODO: Show error message in the UI.");
+      notify("Passwords do not match.", "error");
     } else if (password.length < 3) {
       setPassword("");
       setConfirmPassword("");
-      alert("Password must be at least 3 characters long.");
+      notify("Password must be at least 3 characters long.", "error");
     } else {
       axios
         .post(
@@ -47,32 +59,29 @@ export default function RegisterForm() {
           }
         )
         .then((response) => {
+          console.log(`response: ${response.status}`);
           if (response.status === 201) {
             localStorage.setItem("accessToken", response.data.access);
             localStorage.setItem("refreshToken", response.data.refresh);
             setUser(response.data.user);
-            nav("/settings"); // Change that later - just for debug
-          } else {
-            console.log(`Status:${response.status}: Registration failed`);
+            notify("Registration successful!", "success");
+            nav("/login"); // Change that later - just for debug
           }
         })
         .catch((error) => {
-          console.log("Error ", error);
+          if (error.response && error.response.status === 409) {
+            notify("Email already exists.", "error");
+          } else {
+            console.error("Registration error:", error);
+            notify("Registration failed. Please try again.", "error");
+          }
         });
-    }
-  };
-
-  const handleFullNameChange = (e) => {
-    const value = e.target.value;
-    // Allow only letters and spaces
-    if (/^[A-Za-z\s]*$/.test(value)) {
-      //setFullName(value);
     }
   };
 
   return (
     <div className="page">
-      <Navbar />
+      <ToastContainer />
       <main className="main-content">
         <div className="signup-container">
           <div className="logo-section">
@@ -137,7 +146,6 @@ export default function RegisterForm() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

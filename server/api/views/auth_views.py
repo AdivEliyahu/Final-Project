@@ -104,12 +104,18 @@ def login(request):
 
 @require_POST
 def register(request):
-    data = json.loads(request.body)
+    try:
+        data = json.loads(request.body)
+    except Exception as e:
+        return JsonResponse({"error": "Invalid request payload", "details": str(e)}, status=400)
+
+
     users_collection = db['users']
 
-    if users_collection.find_one({"email": data.get('email')}):
-        return JsonResponse({"error": "Email already exists"}, status=400)
-
+    email = data.get('email')
+    if users_collection.find_one({"email": email}):
+        return JsonResponse({"error": "Email is already in use."}, status=409)
+    
     new_user = {
         "name": data.get('name'),
         "email": data.get('email'),
@@ -150,7 +156,7 @@ def get_user(request):
 
         if not user:
             return JsonResponse({"error": "User not found"}, status=404)
-
+        print(user)
         user['_id'] = str(user['_id'])  
         print('get_user func: ' + user['name'])
 
