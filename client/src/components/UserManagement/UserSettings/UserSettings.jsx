@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const UserSettings = () => {
-  const { user, setUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const nav = useNavigate();
+  const { user, login } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,7 +27,7 @@ const UserSettings = () => {
             nav("/login");
           }
 
-          setUser(response.data.user);
+          login(response.data.user, accessToken);
         } catch (err) {
           setError(err.message);
           console.error("Error fetching user data:", err);
@@ -38,7 +38,7 @@ const UserSettings = () => {
     };
 
     fetchUserData();
-  }, [user, setUser, nav]);
+  }, [user, nav]);
 
   if (isLoading) {
     return <div>Loading...</div>;

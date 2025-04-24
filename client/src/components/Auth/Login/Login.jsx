@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Login.css";
-import { UserContext } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 import { ToastContainer } from "react-toastify";
 
 export default function LoginForm() {
@@ -11,8 +11,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
 
-  const { user, setUser } = useContext(UserContext);
   const nav = useNavigate();
+  const { login } = useAuth();
 
   useEffect(() => {
     axios
@@ -36,11 +36,7 @@ export default function LoginForm() {
       .then((response) => {
         console.log(response.status);
         if (response.status === 200) {
-          localStorage.setItem("accessToken", response.data.access);
-          localStorage.setItem("refreshToken", response.data.refresh);
-
-          setUser(response.data.user);
-
+          login(response.data.user, response.data.access);
           nav("/"); // Change that later - just for debug
         } else {
           console.log(`Status:${response.status}: Wrong`);

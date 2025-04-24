@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Register.css";
-import { UserContext } from "../../../context/UserContext";
+import { useAuth } from "../../../context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function RegisterForm() {
@@ -12,8 +12,8 @@ export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
 
-  const { setUser } = useContext(UserContext);
   const nav = useNavigate();
+  const { login } = useAuth();
   const notify = (
     message = "Oh Sanp! Something went wrong :(",
     type = "error"
@@ -61,11 +61,9 @@ export default function RegisterForm() {
         .then((response) => {
           console.log(`response: ${response.status}`);
           if (response.status === 201) {
-            localStorage.setItem("accessToken", response.data.access);
-            localStorage.setItem("refreshToken", response.data.refresh);
-            setUser(response.data.user);
+            login(response.data.user, response.data.access);
             notify("Registration successful!", "success");
-            nav("/login"); // Change that later - just for debug
+            nav("/"); // Change that later - just for debug
           }
         })
         .catch((error) => {
