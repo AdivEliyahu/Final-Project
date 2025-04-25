@@ -1,0 +1,152 @@
+:root {
+  --brand-teal: #0e5266;
+  --brand-teal-light: #156f8d;
+
+  --textbox-bg: #c8dde1;
+
+  --cta: #ff8450;
+  --cta-hover: #ffa764;
+
+  --text-dark: #374151;
+  --text-muted: #9ca3af;
+
+  --canvas-max: 1200px;
+}
+
+.anonymizer-page {
+  width: 90%;
+  max-width: var(--canvas-max);
+  margin: 4rem auto 0;
+  display: flex;
+  column-gap: 7rem;
+  padding: 0 1.5rem;
+  align-items: flex-start;
+}
+
+.anonymizer-container {
+  flex: 0 1 70%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.anonymizer-title {
+  font-size: clamp(1.6rem, 2vw + 1rem, 2rem);
+  font-weight: 700;
+  color: var(--brand-teal);
+  margin: 0 0 2rem;
+}
+
+.anonymizer-textbox {
+  width: 100%;
+  min-height: 260px;
+  background: var(--textbox-bg);
+  border: none;
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  font-family: "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-dark);
+  resize: none;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 4%);
+}
+.anonymizer-textbox::placeholder {
+  color: var(--text-muted);
+}
+
+.anonymizer-btn:hover {
+  background: var(--cta-hover);
+}
+
+.save-card {
+  flex: 0 0 130px;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 4.8rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4rem;
+}
+
+.save-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--brand-teal-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers the emoji horizontally */
+  gap: 0.4rem;
+}
+.saving-emoji {
+  font-size: 1.5rem; /* optional: make the icon a bit larger */
+  display: block;
+}
+
+.save-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--brand-teal-light);
+  margin: 0;
+}
+
+.save-caption {
+  font-size: 0.85rem;
+  font-weight: bold;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--text-dark);
+}
+.anonymizer-container > .anonymizer-btn {
+  align-self: flex-start;
+  margin-top: 1.4rem;
+  background: var(--cta);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.55rem 2.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* bounce keyframes */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-6px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-3px);
+  }
+}
+
+.save-icon:hover .saving-emoji {
+  animation: bounce 1s ease-out infinite;
+  transform-origin: bottom center;
+}
+
+@media (max-width: 880px) {
+  .anonymizer-page {
+    /* stack vertically */
+    flex-direction: column;
+    row-gap: 3rem;
+  }
+  .save-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-top: 0;
+    max-width: none;
+  }
+}

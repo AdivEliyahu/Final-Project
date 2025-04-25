@@ -1,0 +1,47 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #006d77;
+  color: white;
+}
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1rem;
+}
+
+.nav-links .link {
+  text-decoration: none;
+  list-style-type: none;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.nav-links li {
+  list-style-type: none;
+}
+
+.nav-buttons button {
+  margin-left: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+}
+.btn-filled {
+  background-color: #0b8d99;
+  color: white;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid white !important;
+  color: white;
+}
