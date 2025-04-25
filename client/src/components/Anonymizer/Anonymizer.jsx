@@ -16,7 +16,7 @@ function Anonymizer() {
         <section className="flex flex-col flex-1 gap-6 w-full">
           <div className="flex flex-1 flex-col w-full">
             {/* Textareas */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_auto] gap-6 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_100px] gap-6 w-full">
               {/* Original Text */}
               <div className="flex flex-col">
                 <p className="text-sm font-semibold text-[#0e5266] mb-2">
@@ -40,25 +40,24 @@ function Anonymizer() {
               </div>
 
               {/* Save Button */}
-              {user ? (
-              <div className="flex flex-col justify-center items-center">
-                <div
-                  className="cursor-pointer text-[#156f8d] flex flex-col items-center gap-1 group"
-                  onClick={() => alert("Save feature here")}
-                >
-                  <span
-                    className="text-[1.5rem] block group-hover:animate-bounce"
-                    role="img"
-                    aria-label="file"
+              <div className="hidden lg:flex w-[100px] flex-col justify-center items-center">
+                {user ? (
+                  <div
+                    className="cursor-pointer text-[#156f8d] hover:text-[#0e5266] transition flex flex-col items-center gap-2 group"
+                    onClick={() => alert("Save feature here")}
                   >
-                    📄
-                  </span>
-                  <h3 className="uppercase tracking-wider text-xs font-bold text-[#156f8d]">
-                    Save Document
-                  </h3>
-                </div>
+                    <div className="text-3xl group-hover:animate-bounce">
+                      📄
+                    </div>
+                    <div className="text-xs uppercase font-bold tracking-wide text-center">
+                      Save Document
+                    </div>
+                  </div>
+                ) : (
+                  // Invisible placeholder to preserve layout height
+                  <div className="invisible text-3xl">📄</div>
+                )}
               </div>
-              ): null}
             </div>
             {/* BUTTON */}
             <div className="flex justify-center mt-8">
