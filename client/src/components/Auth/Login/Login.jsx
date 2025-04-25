@@ -4,7 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import "./Login.css";
 import { useAuth } from "../../../context/AuthContext";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -13,6 +13,22 @@ export default function LoginForm() {
 
   const nav = useNavigate();
   const { login } = useAuth();
+
+  const notify = (
+    message = "Oh Sanp! Something went wrong :(",
+    type = "error"
+  ) => {
+    toast[type](message, {
+      position: "bottom-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
 
   useEffect(() => {
     axios
@@ -36,6 +52,7 @@ export default function LoginForm() {
       .then((response) => {
         console.log(response.status);
         if (response.status === 200) {
+          notify("Login successful", "success");
           login(response.data.user, response.data.access);
           nav("/"); // Change that later - just for debug
         } else {
@@ -43,6 +60,10 @@ export default function LoginForm() {
         }
       })
       .catch((error) => {
+        notify(
+          "Incorrect email or password. Please verify your login details.",
+          "error"
+        );
         console.log("Error ", error);
       });
   };

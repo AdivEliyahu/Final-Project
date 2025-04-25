@@ -12,6 +12,7 @@ export default function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
 
+  const emailRx = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   const nav = useNavigate();
   const { login } = useAuth();
   const notify = (
@@ -48,6 +49,8 @@ export default function RegisterForm() {
       setPassword("");
       setConfirmPassword("");
       notify("Password must be at least 3 characters long.", "error");
+    } else if (!emailRx.test(email)) {
+      notify("Please enter a full e-mail address (e.g. user@example.com)");
     } else {
       axios
         .post(
