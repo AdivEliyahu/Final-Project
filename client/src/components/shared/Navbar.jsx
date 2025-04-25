@@ -40,7 +40,7 @@ export default function Navbar() {
       </div>
       <ul className="nav-links">
         <li>
-          <Link className="link" to="/">
+          <Link className="link" to="/anonymizer">
             Anonymizer
           </Link>
         </li>

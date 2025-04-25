@@ -7,6 +7,7 @@ import Register from "./components/Auth/Register/Register";
 import ProtectedRoute from "./context/ProtectedRoute";
 import Navbar from "./components/shared/Navbar";
 import Footer from "./components/shared/Footer";
+import Anonymizer from "./components/Anonymizer/Anonymizer";
 import "./App.css";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
+          <Route path="/anonymizer" element={<Anonymizer />} />
           <Route
             path="/settings"
             element={<ProtectedRoute element={<UserSettings />} />}

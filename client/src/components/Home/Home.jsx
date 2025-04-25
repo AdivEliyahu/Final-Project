@@ -1,10 +1,10 @@
 import "./Home.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
 
 function Home() {
-  const [message, setMessage] = useState("");
+  //const [message, setMessage] = useState("");
 
   const token = localStorage.getItem("accessToken");
   const nav = useNavigate();
@@ -42,7 +42,7 @@ function Home() {
         <button
           className="home-cta"
           onClick={() => {
-            alert("change to navigate anonymizer");
+            nav("/anonymizer");
           }}
         >
           Explore Anonymizer
