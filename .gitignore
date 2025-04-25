@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 .vscode/settings.json
 /server/api/__pycache__
+/server/crud/__pycache__
