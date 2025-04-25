@@ -1,55 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import {
+  TbLayoutSidebarLeftExpand,
+  TbLayoutSidebarRightExpand,
+} from "react-icons/tb";
 
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showContent, setShowContent] = useState(true);
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (sidebarOpen) {
+      const timer = setTimeout(() => setShowContent(true), 200);
+      return () => clearTimeout(timer);
+    } else {
+      setShowContent(false);
+    }
+  }, [sidebarOpen]);
 
   return (
     <div
-      className={`transition-all duration-300 ${
+      className={`${
         sidebarOpen ? "w-64" : "w-10"
-      } bg-gray-100 flex flex-col relative items-center overflow-hidden`}
+      } bg-gray-100 flex flex-col relative transition-all duration-300 ease-in-out`}
     >
       {/* Collapse Button */}
       <button
-        className="absolute top-2 right-2 text-sm text-gray-600 hover:text-gray-800"
+        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 hover:bg-gray-300 hover:rounded-sm"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
-        {sidebarOpen ? "←" : ">"}
+        {sidebarOpen ? (
+          <TbLayoutSidebarRightExpand size={25} />
+        ) : (
+          <TbLayoutSidebarLeftExpand size={25} />
+        )}
       </button>
 
-      <div className="flex-1 flex flex-col items-center justify-center mt-12 w-full">
-        <div
-          className={`transition-all duration-300 origin-left overflow-hidden ${
-            sidebarOpen
-              ? "scale-100 opacity-100 max-h-40"
-              : "scale-0 opacity-0 max-h-0"
-          }`}
-        >
+      {/* Sidebar Content */}
+      {showContent && (
+        <div className="mt-12 px-4">
           {user ? (
-            <div
-              className="text-[1.2rem] cursor-pointer text-[#156f8d] flex flex-col items-center gap-1 group"
-              onClick={() => alert("Save feature here")}
-            >
-              <span
-                className="text-[1.5rem] block group-hover:animate-bounce"
-                role="img"
-                aria-label="file"
-              >
-                📄
-              </span>
-              <h3 className="uppercase tracking-wider text-xs font-bold text-[#156f8d] m-0">
-                Save Document
-              </h3>
-            </div>
+            <div>Show docs here...</div>
           ) : (
-            <p className="text-sm font-bold leading-[1.45] text-center text-[#374151]">
-              Sign-in to save your anonymized documents for future access.
-            </p>
+            <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200">
+              <div className="text-xs uppercase text-gray-400 tracking-wide mb-1">
+                Saving Feature 📄
+              </div>
+              <div className="text-sm text-gray-500 font-semibold ">
+                Sign in to securely save your anonymized documents and access
+                them anytime.
+              </div>
+            </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
