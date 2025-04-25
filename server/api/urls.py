@@ -18,7 +18,6 @@ urlpatterns = [
     path('get_user', get_user),
     
     path('test',test), # Remove later test only
-    path('test_load',test_load), # Remove later test only
     path('protected_view',protected_view), # Remove later test only
     
 ]
