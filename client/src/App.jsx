@@ -12,20 +12,20 @@ import "./App.css";
 
 const App = () => {
   return (
-    <div className="page">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="main-content">
+      <main className="flex-grow flex justify-center items-start">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/anonymizer" element={<Anonymizer />} />
           <Route
             path="/settings"
             element={<ProtectedRoute element={<UserSettings />} />}
           />
         </Routes>
-      </div>
+      </main>
       <Footer />
     </div>
   );
