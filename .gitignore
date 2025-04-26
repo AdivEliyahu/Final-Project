@@ -161,5 +161,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .vscode/settings.json
+
 /server/api/__pycache__
+/server/__pycache__
 /server/crud/__pycache__
