@@ -1,9 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 function Anonymizer() {
   const { user } = useAuth();
+  const [originalText, setOriginalText] = useState("");
+  const [anonymizedText, setAnonymizedText] = useState("");
+  const [csrfToken, setCsrfToken] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/csrf", { withCredentials: true })
+      .then(() => setCsrfToken(Cookies.get("csrftoken")))
+      .catch((error) => console.error("Error fetching CSRF token:", error));
+  }, []);
+
+  const handleAnonymize = async () => {
+    if (!originalText.trim()) {
+      alert("Please enter text first"); // TODO: Toast message
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:8000/anonymize/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        credentials: "include",
+        body: JSON.stringify({ text: originalText }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to extract entities");
+      }
+
+      const data = await response.json();
+      setAnonymizedText(data.anonymized_text);
+    } catch (error) {
+      console.error("Error anonymizing text:", error);
+      alert("An error occurred while anonymizing the text."); // TODO: Toast message
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex w-full min-h-full">
@@ -25,6 +71,8 @@ function Anonymizer() {
                 <textarea
                   className="flex-1 min-h-[500px] bg-[#c8dde1] border-none rounded-md p-4 font-mono text-base leading-[1.5] text-[#374151] resize-none shadow-inner placeholder:text-[#9ca3af]"
                   placeholder="Paste or type the text you’d like to anonymize…"
+                  value={originalText}
+                  onChange={(e) => setOriginalText(e.target.value)}
                 />
               </div>
 
@@ -36,6 +84,8 @@ function Anonymizer() {
                 <textarea
                   className="flex-1 min-h-[500px] bg-[#c8dde1] border-none rounded-md p-4 font-mono text-base leading-[1.5] text-[#374151] resize-none shadow-inner placeholder:text-[#9ca3af]"
                   placeholder="Anonymized output will appear here…"
+                  value={anonymizedText}
+                  readOnly // later we'll make this editable
                 />
               </div>
 
@@ -59,13 +109,21 @@ function Anonymizer() {
                 )}
               </div>
             </div>
-            {/* BUTTON */}
+            {/* Anonymize Button */}
             <div className="flex justify-center mt-8">
               <button
-                className="bg-[#ff8450] hover:bg-[#ffa764] text-white font-semibold rounded-full px-10 py-3 transition"
-                onClick={() => alert("Connect model here")}
+                className="bg-[#ff8450] hover:bg-[#ffa764] text-white font-semibold rounded-full px-10 py-3 transition flex items-center gap-2"
+                onClick={handleAnonymize}
+                disabled={loading} // disable button while loading
               >
-                Anonymize
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Loading...</span>
+                  </div>
+                ) : (
+                  "Anonymize"
+                )}
               </button>
             </div>
           </div>

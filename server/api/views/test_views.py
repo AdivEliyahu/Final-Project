@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from .auth_views import jwt_required
 import pymongo 
 from db_connection import db 
-from .ner_model import get_entities, load_ner_model
+from .models_views import get_entities, load_ner_model
 
 load_dotenv()
 

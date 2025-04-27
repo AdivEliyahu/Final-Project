@@ -11,5 +11,5 @@ class ApiConfig(AppConfig):
     name = "api"
 
     def ready(self):
-        from .views.ner_model import load_ner_model
+        from .views.models_views import load_ner_model
         load_ner_model()
