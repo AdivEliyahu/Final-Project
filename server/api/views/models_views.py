@@ -144,6 +144,10 @@ def replace_entities(gpt_response, text):
         start = entity["start_offset"]
         end = entity["end_offset"]
         label = entity["entity_type"]
+        identifier_type = entity["identifier_type"]
+        
+        if identifier_type == "NO_MASK":
+            continue # Skip entities with NO_MASK identifier type
         
         anonymized_text = anonymized_text[:start] + f"<{label}>" + anonymized_text[end:]
     
