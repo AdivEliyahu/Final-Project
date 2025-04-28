@@ -49,9 +49,9 @@ function Home() {
         </button>
       </div>
 
-      <div className="md:w-1/2 flex justify-center bg-[#f3f7fa] p-4 rounded-3xl">
+      <div className="md:w-1/2 flex justify-center p-4 rounded-3xl">
         <img
-          src="/assets/home-image.png"
+          src="/assets/hero.png"
           alt="Anonify logo"
           className="w-full h-auto object-cover rounded-[20px] animate-rotateY"
         />

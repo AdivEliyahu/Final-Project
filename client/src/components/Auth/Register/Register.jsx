@@ -16,7 +16,7 @@ export default function RegisterForm() {
   const nav = useNavigate();
   const { login } = useAuth();
   const notify = (
-    message = "Oh Sanp! Something went wrong :(",
+    message = "Oh Snap! Something went wrong :(",
     type = "error"
   ) => {
     toast[type](message, {
