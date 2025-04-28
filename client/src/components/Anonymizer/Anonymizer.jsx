@@ -64,16 +64,26 @@ function Anonymizer() {
             {/* Textareas */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_100px] gap-6 w-full">
               {/* Original Text */}
-              <div className="flex flex-col">
+              <div className="relative flex flex-col">
                 <p className="text-sm font-semibold text-[#0e5266] mb-2">
                   Original Text
                 </p>
+
+                {/* Textarea */}
                 <textarea
-                  className="flex-1 min-h-[500px] bg-[#c8dde1] border-none rounded-md p-4 font-mono text-base leading-[1.5] text-[#374151] resize-none shadow-inner placeholder:text-[#9ca3af]"
+                  className={`flex-1 min-h-[500px] bg-[#c8dde1] border-none rounded-md p-4 font-mono text-base leading-[1.5] text-[#374151] resize-none shadow-inner placeholder:text-[#9ca3af] transition-all duration-300 ${
+                    loading ? "opacity-50" : ""
+                  }`}
                   placeholder="Paste or type the text you’d like to anonymize…"
                   value={originalText}
                   onChange={(e) => setOriginalText(e.target.value)}
+                  disabled={loading}
                 />
+
+                {/* Shimmer Overlay */}
+                {loading && (
+                  <div className="absolute inset-0 rounded-md bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer pointer-events-none"></div>
+                )}
               </div>
 
               {/* Anonymized Text */}
@@ -86,6 +96,7 @@ function Anonymizer() {
                   placeholder="Anonymized output will appear here…"
                   value={anonymizedText}
                   readOnly // later we'll make this editable
+                  disabled={loading}
                 />
               </div>
 
