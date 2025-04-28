@@ -81,73 +81,67 @@ export default function RegisterForm() {
   };
 
   return (
-    <>
-      <ToastContainer />
-      <div className="flex-grow flex justify-center items-center px-4 py-12 h-full">
-        <div className="flex flex-col md:flex-row items-center gap-16 bg-teal-300/5 rounded-3xl shadow-lg p-8 w-full max-w-4xl">
-          <img
-            src="/assets/Anonify_Logo.png"
-            alt="Logo"
-            className="h-50 w-50 animate-[rotateY_1s_ease-in-out_infinite_alternate]"
-            style={{ transformOrigin: "center" }}
-          />
+    <div className="flex-grow flex justify-center items-center px-4 py-12 h-full">
+      <div className="flex flex-col md:flex-row items-center gap-16 bg-teal-300/5 rounded-3xl shadow-lg p-8 w-full max-w-4xl">
+        <img
+          src="/assets/Anonify_Logo.png"
+          alt="Logo"
+          className="h-50 w-50 animate-[rotateY_1s_ease-in-out_infinite_alternate]"
+          style={{ transformOrigin: "center" }}
+        />
 
-          <div className="w-[25rem] p-8 text-center">
-            <h1 className="text-3xl font-bold text-[#f96e2a] mb-2">
-              Create an Account
-            </h1>
-            <p className="text-sm text-gray-600 mb-6">
-              By signing up, you agree to the Terms of Service.
-            </p>
+        <div className="w-[25rem] p-8 text-center">
+          <h1 className="text-3xl font-bold text-[#f96e2a] mb-2">
+            Create an Account
+          </h1>
+          <p className="text-sm text-gray-600 mb-6">
+            By signing up, you agree to the Terms of Service.
+          </p>
 
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col items-center"
+          <form onSubmit={handleSubmit} className="flex flex-col items-center">
+            <input
+              type="email"
+              placeholder="Your email"
+              className="w-[80%] px-4 py-3 mb-4 text-base text-gray-800 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f96e2a]"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-[80%] px-4 py-3 mb-4 text-base text-gray-800 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f96e2a]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+
+            <input
+              type="password"
+              placeholder="Repeat Password"
+              className="w-[80%] px-4 py-3 mb-4 text-base text-gray-800 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f96e2a]"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+
+            <button
+              type="submit"
+              className="mt-4 bg-[#f96e2a] hover:bg-[#78b3ce] text-white font-semibold px-10 py-3 rounded-full transition"
             >
-              <input
-                type="email"
-                placeholder="Your email"
-                className="w-[80%] px-4 py-3 mb-4 text-base text-gray-800 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f96e2a]"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              Sign Up
+            </button>
 
-              <input
-                type="password"
-                placeholder="Password"
-                className="w-[80%] px-4 py-3 mb-4 text-base text-gray-800 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f96e2a]"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-
-              <input
-                type="password"
-                placeholder="Repeat Password"
-                className="w-[80%] px-4 py-3 mb-4 text-base text-gray-800 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#f96e2a]"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-
-              <button
-                type="submit"
-                className="mt-4 bg-[#f96e2a] hover:bg-[#78b3ce] text-white font-semibold px-10 py-3 rounded-full transition"
-              >
-                Sign Up
-              </button>
-
-              <span className="or-text text-gray-500 text-sm mt-4">or</span>
-              <div className="flex justify-center gap-4 mt-2 text-[#f96e2a] text-xl font-bold">
-                <a href="#">G+</a>
-                <a href="#">f</a>
-                <a href="#">t</a>
-              </div>
-            </form>
-          </div>
+            <span className="or-text text-gray-500 text-sm mt-4">or</span>
+            <div className="flex justify-center gap-4 mt-2 text-[#f96e2a] text-xl font-bold">
+              <a href="#">G+</a>
+              <a href="#">f</a>
+              <a href="#">t</a>
+            </div>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -69,8 +69,6 @@ export default function LoginForm() {
   };
 
   return (
-    <>
-      <ToastContainer />
       <div className="flex-grow flex justify-center items-center px-4 py-12 h-full">
         <div className="flex flex-col md:flex-row items-center gap-16 bg-teal-300/5 rounded-3xl shadow-lg p-8 w-full max-w-4xl">
           <img
@@ -123,6 +121,5 @@ export default function LoginForm() {
           </div>
         </div>
       </div>
-    </>
   );
 }

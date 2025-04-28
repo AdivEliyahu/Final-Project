@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 function Anonymizer() {
   const { user } = useAuth();
@@ -10,6 +11,22 @@ function Anonymizer() {
   const [anonymizedText, setAnonymizedText] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const notify = (
+    message = "Oh Sanp! Something went wrong :(",
+    type = "error"
+  ) => {
+    toast[type](message, {
+      position: "bottom-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
 
   useEffect(() => {
     axios
@@ -20,7 +37,7 @@ function Anonymizer() {
 
   const handleAnonymize = async () => {
     if (!originalText.trim()) {
-      alert("Please enter text first"); // TODO: Toast message
+      notify("Please enter text first"); // TODO: Toast message
       return;
     }
 
@@ -44,8 +61,7 @@ function Anonymizer() {
       const data = await response.json();
       setAnonymizedText(data.anonymized_text);
     } catch (error) {
-      console.error("Error anonymizing text:", error);
-      alert("An error occurred while anonymizing the text."); // TODO: Toast message
+      alert("An error occurred while anonymizing the text.", "error");
     } finally {
       setLoading(false);
     }
