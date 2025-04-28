@@ -1,6 +1,8 @@
 from django.urls import path
 from .views.auth_views import *
 from .views.test_views import *
+from .views.models_views import anonymize_entities
+
 
 
 from rest_framework_simplejwt.views import (
@@ -16,6 +18,7 @@ urlpatterns = [
     path('register', register),
     path('csrf', set_csrf_token),
     path('get_user', get_user),
+    path('anonymize/', anonymize_entities, name='extract_entities'),
     
     path('test',test), # Remove later test only
     path('protected_view',protected_view), # Remove later test only

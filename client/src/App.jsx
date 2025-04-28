@@ -8,6 +8,8 @@ import ProtectedRoute from "./context/ProtectedRoute";
 import Navbar from "./components/shared/Navbar";
 import Footer from "./components/shared/Footer";
 import Anonymizer from "./components/Anonymizer/Anonymizer";
+import { ToastContainer } from "react-toastify";
+
 import "./App.css";
 
 const App = () => {
@@ -25,6 +27,7 @@ const App = () => {
             element={<ProtectedRoute element={<UserSettings />} />}
           />
         </Routes>
+        <ToastContainer/>
       </main>
       <Footer />
     </div>
