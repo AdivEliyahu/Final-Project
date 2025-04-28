@@ -37,7 +37,7 @@ function Anonymizer() {
 
   const handleAnonymize = async () => {
     if (!originalText.trim()) {
-      notify("Please enter text first"); // TODO: Toast message
+      notify("Please enter text first", "warning");
       return;
     }
 
@@ -61,7 +61,7 @@ function Anonymizer() {
       const data = await response.json();
       setAnonymizedText(data.anonymized_text);
     } catch (error) {
-      alert("An error occurred while anonymizing the text.", "error");
+      notify("An error occurred while anonymizing the text.", "error");
     } finally {
       setLoading(false);
     }

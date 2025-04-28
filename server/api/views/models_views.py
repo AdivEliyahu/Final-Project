@@ -119,6 +119,7 @@ If an entity in the "entities" list is not found in the text, ignore it.
 def gpt_response(text):
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
+        print("Missing OpenAI API Key. Please set OPENAI_API_KEY in your environment variables.")
         raise ValueError("Missing OpenAI API Key. Please set OPENAI_API_KEY in your environment variables.")
     
     client = OpenAI(api_key=api_key)
