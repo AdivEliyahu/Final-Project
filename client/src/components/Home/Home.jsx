@@ -36,10 +36,10 @@ function Home() {
           You have sensitive files? Censor it!
         </h1>
         <p className="text-[#374151] text-base md:text-lg mb-6">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Illum
-          consequatur at temporibus est. Similique consequatur ipsum repellat
-          ratione explicabo, repellendus cupiditate nostrum, et nisi error
-          pariatur voluptates voluptatem impedit quas?
+          Protecting your privacy has never been easier. Anonify helps you
+          quickly hide names, addresses, IDs, and other sensitive details from
+          your documents - all in one click. Just paste your text and let our
+          smart AI anonymize it for you. Safe, simple, and secure.
         </p>
         <button
           className="bg-[#ff8450] hover:bg-[#ffa764] text-white font-semibold rounded-full px-6 py-2 transition"
@@ -53,7 +53,7 @@ function Home() {
         <img
           src="/assets/hero.png"
           alt="Anonify logo"
-          className="w-full h-auto object-cover rounded-[20px] animate-rotateY"
+          className="w-full h-auto object-cover rounded-[20px]"
         />
       </div>
     </div>
