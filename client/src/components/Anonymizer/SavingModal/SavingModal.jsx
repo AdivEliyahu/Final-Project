@@ -1,13 +1,37 @@
 import React from "react";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
   const { user } = useAuth();
   const [docName, setDocName] = useState("");
+  const [userDocNames, setUserDocNames] = useState([]);
+
+  useEffect(() => {
+    console.log("User:", user);
+    const fetchUser = () => {
+      try {
+        axios
+          .get("http://localhost:8000/get_user_doc_names", {
+            headers: {
+              Authorization: user.token,
+            },
+          })
+          .then((result) => {
+            setUserDocNames(result.data.docNames);
+            console.log(result.data.docNames);
+          });
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    fetchUser();
+  }, [user]);
 
   const handleSave = () => {
+    console.log(userDocNames);
     if (!user) {
       notify("Please log in to save your document", "warning");
       return;
@@ -15,7 +39,12 @@ function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
       notify("Please anonymize the text before saving", "warning");
     } else if (docName.length === 0) {
       notify("Please enter a document name", "warning");
-    } else {
+    } else if (
+      !userDocNames.includes(docName) ||
+      window.confirm(
+        "Document name already exists. You'll overwrite it are you sure?"
+      )
+    ) {
       const currentDate = new Date()
         .toLocaleDateString("en-GB", {
           year: "numeric",
@@ -29,10 +58,10 @@ function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
           "http://localhost:8000/save_document/",
           {
             text: anonymizedText,
-            email: user.email,
+            token: user.token,
             docName: docName,
             date: currentDate,
-          }, // don't forget to implement logic to doc name later
+          },
           {
             headers: { "X-CSRFToken": csrfToken },
             withCredentials: true,
@@ -46,9 +75,11 @@ function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
         })
         .catch((error) => {
           if (error.response && error.response.status === 409) {
-            notify("Document already exists.", "error");
+            notify(
+              "Oh Snap, something broken! please try again later.",
+              "error"
+            );
           }
-          // TODO: handle other errors and overwrite logic
         });
     }
   };
