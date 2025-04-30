@@ -5,23 +5,6 @@ from db_connection import db
 from datetime import datetime
 
 
-# @require_POST
-# def save_document(request): 
-#     try:
-#         data = json.loads(request.body)
-#         document = data.get("document")
-
-#         if not document:
-#             return JsonResponse({"error": "Collection name and document are required."}, status=400)
-
-#         users_docs_collection = db["usersDocs"]
-#         user_docs = users_docs_collection.find_one({"email": data.get("email")})
-#         result = user_docs.insert_one(document)
-
-#         return JsonResponse({"message": "Document saved successfully.", "id": str(result.inserted_id)}, status=201)
-#     except Exception as e:
-#         return JsonResponse({"error": str(e)}, status=500)
-
 @require_POST
 def save_document(request):
     try:

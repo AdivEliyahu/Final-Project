@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
+import SavingModal from "./SavingModal/SavingModal";
 
 function Anonymizer() {
   const { user } = useAuth();
@@ -11,6 +12,7 @@ function Anonymizer() {
   const [anonymizedText, setAnonymizedText] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
 
   const notify = (
     message = "Oh Sanp! Something went wrong :(",
@@ -68,40 +70,7 @@ function Anonymizer() {
   };
 
   const handleSavingDocument = () => {
-    if (!user) {
-      notify("Please log in to save your document", "warning");
-      return;
-    }
-    if (anonymizedText.length === 0) {
-      notify("Please anonymize the text before saving", "warning");
-    }
-    const currentDate = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    console.log(currentDate);
-    console.log(user.email);
-    axios
-      .post(
-        "http://localhost:8000/save_document/",
-        { text: anonymizedText, email: "user@user.com", docName: "test" }, // don't forget to implement logic to doc name later
-        {
-          headers: { "X-CSRFToken": csrfToken },
-          withCredentials: true,
-        }
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          notify("Document saved successfully!", "success");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 409) {
-          notify("Document already exists.", "error");
-        }
-        // TODO: handle other errors
-      });
+    setModal(!modal);
   };
 
   return (
@@ -204,6 +173,14 @@ function Anonymizer() {
           </div>
         </section>
       </div>
+      {modal && (
+        <SavingModal
+          setModal={setModal}
+          anonymizedText={anonymizedText}
+          notify={notify}
+          csrfToken={csrfToken}
+        />
+      )}
     </div>
   );
 }

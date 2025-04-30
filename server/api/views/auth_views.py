@@ -156,9 +156,9 @@ def get_user(request):
 
         if not user:
             return JsonResponse({"error": "User not found"}, status=404)
-        print(user)
+
         user['_id'] = str(user['_id'])  
-        print('get_user func: ' + user['name'])
+
 
         return JsonResponse({"user": user}, status=200)
 
