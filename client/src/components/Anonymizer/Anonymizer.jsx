@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 function Anonymizer() {
   const { user } = useAuth();
@@ -67,6 +67,43 @@ function Anonymizer() {
     }
   };
 
+  const handleSavingDocument = () => {
+    if (!user) {
+      notify("Please log in to save your document", "warning");
+      return;
+    }
+    if (anonymizedText.length === 0) {
+      notify("Please anonymize the text before saving", "warning");
+    }
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    console.log(currentDate);
+    console.log(user.email);
+    axios
+      .post(
+        "http://localhost:8000/save_document/",
+        { text: anonymizedText, email: "user@user.com", docName: "test" }, // don't forget to implement logic to doc name later
+        {
+          headers: { "X-CSRFToken": csrfToken },
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          notify("Document saved successfully!", "success");
+        }
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 409) {
+          notify("Document already exists.", "error");
+        }
+        // TODO: handle other errors
+      });
+  };
+
   return (
     <div className="flex w-full min-h-full">
       {/* Sidebar */}
@@ -119,7 +156,7 @@ function Anonymizer() {
                 {user ? (
                   <div
                     className="cursor-pointer text-[#156f8d] hover:text-[#0e5266] transition flex flex-col items-center gap-2 group"
-                    onClick={() => alert("Save feature here")}
+                    onClick={() => handleSavingDocument()}
                   >
                     <div className="text-3xl group-hover:animate-bounce">
                       📄
