@@ -10,13 +10,9 @@ def save_document(request):
     try:
         data = json.loads(request.body)
         doc_name = data.get("docName")
-        token = data.get("token")
+        email = data.get("email")
         text = data.get("text")
         date = data.get("date")
-
-        payload = decode_jwt(token)  
-        email = payload.get("email")
-
 
         if not all([doc_name, email, text]):
             return JsonResponse({"error": "Email, Document Name, and text are required."}, status=400)
@@ -48,18 +44,18 @@ def save_document(request):
 @require_GET
 def get_user_doc_names(request):
     try:
-        access_token = request.headers.get("Authorization")
-        payload = decode_jwt(access_token)  
-        email = payload.get("email")
+        email = request.GET.get("email")
 
         if not email:
             return JsonResponse({"error": "Email is required."}, status=400)
 
         users_docs_collection = db["usersDocs"]
-        user_docs = users_docs_collection.find_one({"email": email})['user_docs']
+        user_docs_instance = users_docs_collection.find_one({"email": email})
 
-        if not user_docs:
+        if not user_docs_instance:
             return JsonResponse({"docNames": []}, status=200)
+        
+        user_docs = user_docs_instance['user_docs']
 
         doc_names = [key for key in user_docs.keys() if key != "_id" and key != "email"]
         return JsonResponse({"docNames": doc_names}, status=200)

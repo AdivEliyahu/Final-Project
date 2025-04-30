@@ -10,12 +10,13 @@ function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
 
   useEffect(() => {
     console.log("User:", user);
+    console.log(user.token);
     const fetchUser = () => {
       try {
         axios
           .get("http://localhost:8000/get_user_doc_names", {
-            headers: {
-              Authorization: user.token,
+            params: {
+              email: user.email,
             },
           })
           .then((result) => {
@@ -58,7 +59,7 @@ function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
           "http://localhost:8000/save_document/",
           {
             text: anonymizedText,
-            token: user.token,
+            email: user.email,
             docName: docName,
             date: currentDate,
           },
