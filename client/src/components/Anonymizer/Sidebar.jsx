@@ -5,7 +5,7 @@ import {
   TbLayoutSidebarRightExpand,
 } from "react-icons/tb";
 
-const Sidebar = () => {
+const Sidebar = ({ userDocs }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showContent, setShowContent] = useState(true);
   const { user } = useAuth();
@@ -41,7 +41,31 @@ const Sidebar = () => {
       {showContent && (
         <div className="mt-12 px-4">
           {user ? (
-            <div>Show docs here...</div>
+            <div className="p-2 bg-white rounded-xl shadow-sm border border-gray-200">
+              <div className="text-s text-gray-400 tracking-wide mb-1">
+                🗃️ Your Documents
+              </div>
+              <ul className="text-sm text-gray-700 space-y-1 overflow-y-auto ">
+                {userDocs.length === 0 ? (
+                  <li className="text-gray-400 italic">No documents saved.</li>
+                ) : (
+                  userDocs.map((doc, index) => (
+                    <li
+                      onClick={() => {
+                        alert("nav to doc");
+                      }}
+                      key={index}
+                      className="hover:bg-gray-100 px-2 py-2 rounded cursor-pointer border-b border-gray-200"
+                    >
+                      <div className="text-lg font-medium text-gray-800">
+                        {doc[0]}
+                      </div>
+                      <div className="text-sm text-gray-500">{doc[1]}</div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
           ) : (
             <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="text-xs uppercase text-gray-400 tracking-wide mb-1">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Cookies from "js-cookie";
@@ -13,6 +13,7 @@ function Anonymizer() {
   const [csrfToken, setCsrfToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
+  const [userDocs, setUserDocs] = useState([]);
 
   const notify = (
     message = "Oh Sanp! Something went wrong :(",
@@ -73,11 +74,29 @@ function Anonymizer() {
     setModal(!modal);
   };
 
+  const fetchUserDocs = useCallback(() => {
+    if (!user?.email) return;
+    axios
+      .get("http://localhost:8000/get_user_doc_names", {
+        params: { email: user.email },
+      })
+      .then((result) => {
+        setUserDocs(result.data.docNames);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch user:", error);
+      });
+  }, [user?.email]);
+
+  useEffect(() => {
+    fetchUserDocs();
+  }, [fetchUserDocs]);
+
   return (
     <div className="flex w-full min-h-full">
       {/* Sidebar */}
       <div className="hidden md:flex">
-        <Sidebar />
+        <Sidebar userDocs={userDocs} />
       </div>
 
       {/* Main Content */}
@@ -179,6 +198,8 @@ function Anonymizer() {
           anonymizedText={anonymizedText}
           notify={notify}
           csrfToken={csrfToken}
+          userDocs={userDocs}
+          fetchUserDocs={fetchUserDocs}
         />
       )}
     </div>

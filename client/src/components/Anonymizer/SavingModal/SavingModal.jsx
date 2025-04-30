@@ -3,36 +3,23 @@ import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
+function SavingModal({
+  setModal,
+  anonymizedText,
+  notify,
+  csrfToken,
+  userDocs,
+  fetchUserDocs,
+}) {
   const { user } = useAuth();
   const [docName, setDocName] = useState("");
   const [userDocNames, setUserDocNames] = useState([]);
 
   useEffect(() => {
-    console.log("User:", user);
-    console.log(user.token);
-    const fetchUser = () => {
-      try {
-        axios
-          .get("http://localhost:8000/get_user_doc_names", {
-            params: {
-              email: user.email,
-            },
-          })
-          .then((result) => {
-            setUserDocNames(result.data.docNames);
-            console.log(result.data.docNames);
-          });
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-
-    fetchUser();
-  }, [user]);
+    setUserDocNames(userDocs.map((item) => item[0]));
+  }, [userDocs]);
 
   const handleSave = () => {
-    console.log(userDocNames);
     if (!user) {
       notify("Please log in to save your document", "warning");
       return;
@@ -71,11 +58,12 @@ function SavingModal({ setModal, anonymizedText, notify, csrfToken }) {
         .then((response) => {
           if (response.status === 200) {
             notify("Document saved successfully!", "success");
+            fetchUserDocs(user.email);
             setModal(false);
           }
         })
         .catch((error) => {
-          if (error.response && error.response.status === 409) {
+          if (error.response) {
             notify(
               "Oh Snap, something broken! please try again later.",
               "error"

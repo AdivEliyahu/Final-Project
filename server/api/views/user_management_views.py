@@ -57,7 +57,8 @@ def get_user_doc_names(request):
         
         user_docs = user_docs_instance['user_docs']
 
-        doc_names = [key for key in user_docs.keys() if key != "_id" and key != "email"]
+        doc_names = [(key, user_docs[key]["date"]) for key in user_docs.keys() if key != "_id" and key != "email"]
+  
         return JsonResponse({"docNames": doc_names}, status=200)
 
     except Exception as e:
