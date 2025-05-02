@@ -8,11 +8,41 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    const cachedUser = localStorage.getItem("userData");
 
-    if (token) {
-      setUser({ token });
+    if (token && cachedUser) {
+      try {
+        const parsedUser = JSON.parse(cachedUser);
+        setUser(parsedUser);
+        setLoading(false);
+      } catch {
+        localStorage.removeItem("userData");
+      }
+    } else if (token) {
+      // fallback: fetch from backend if userData is missing
+      fetch("http://localhost:8000/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Unauthorized");
+          return res.json();
+        })
+        .then((userData) => {
+          setUser(userData);
+          localStorage.setItem("userData", JSON.stringify(userData));
+        })
+        .catch((err) => {
+          console.error("Failed to fetch user profile", err);
+          setUser(null);
+          localStorage.removeItem("accessToken");
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = (userData, token) => {
