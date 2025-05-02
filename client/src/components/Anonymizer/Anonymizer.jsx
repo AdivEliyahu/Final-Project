@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import SavingModal from "./SavingModal/SavingModal";
 
 function Anonymizer() {
   const { user } = useAuth();
@@ -11,9 +12,11 @@ function Anonymizer() {
   const [anonymizedText, setAnonymizedText] = useState("");
   const [csrfToken, setCsrfToken] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [userDocs, setUserDocs] = useState([]);
 
   const notify = (
-    message = "Oh Sanp! Something went wrong :(",
+    message = "Oh Snap! Something went wrong.",
     type = "error"
   ) => {
     toast[type](message, {
@@ -67,11 +70,47 @@ function Anonymizer() {
     }
   };
 
+  const handleSavingDocument = () => {
+    if (!user) {
+      notify("Sign in to save your document.", "warning");
+      return;
+    } else if (!anonymizedText) {
+      notify("Please anonymize before saving.", "warning");
+      return;
+    }
+    setModal(!modal);
+  };
+
+  const fetchUserDocs = useCallback(() => {
+    if (!user?.email) return;
+    axios
+      .get("http://localhost:8000/get_user_doc_names", {
+        params: { email: user.email },
+      })
+      .then((result) => {
+        setUserDocs(result.data.docNames);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch user:", error);
+      });
+  }, [user?.email]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserDocs();
+    }
+  }, [user, fetchUserDocs]);
+
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
   return (
     <div className="flex w-full min-h-full">
+      {/* {<span>{user.email}</span>} */}
       {/* Sidebar */}
       <div className="hidden md:flex">
-        <Sidebar />
+        <Sidebar userDocs={userDocs} />
       </div>
 
       {/* Main Content */}
@@ -119,7 +158,7 @@ function Anonymizer() {
                 {user ? (
                   <div
                     className="cursor-pointer text-[#156f8d] hover:text-[#0e5266] transition flex flex-col items-center gap-2 group"
-                    onClick={() => alert("Save feature here")}
+                    onClick={() => handleSavingDocument()}
                   >
                     <div className="text-3xl group-hover:animate-bounce">
                       📄
@@ -152,21 +191,35 @@ function Anonymizer() {
               </div>
 
               {/* Save Button (only visible on small screens) */}
-              <div className="group flex flex-col items-center mt-4 lg:hidden">
-                <button
-                  className="text-[#156f8d] hover:text-[#0e5266] flex flex-col items-center gap-2"
-                  onClick={() => alert("Save feature here")}
-                >
-                  <div className="text-2xl group-hover:animate-bounce">📄</div>
-                  <div className="text-xs uppercase font-bold tracking-wide text-center">
-                    Save Document
-                  </div>
-                </button>
-              </div>
+              {user && (
+                <div className="group flex flex-col items-center mt-4 lg:hidden">
+                  <button
+                    className="text-[#156f8d] hover:text-[#0e5266] flex flex-col items-center gap-2"
+                    onClick={() => handleSavingDocument()}
+                  >
+                    <div className="text-2xl group-hover:animate-bounce">
+                      📄
+                    </div>
+                    <div className="text-xs uppercase font-bold tracking-wide text-center">
+                      Save Document
+                    </div>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>
       </div>
+      {modal && (
+        <SavingModal
+          setModal={setModal}
+          anonymizedText={anonymizedText}
+          notify={notify}
+          csrfToken={csrfToken}
+          userDocs={userDocs}
+          fetchUserDocs={fetchUserDocs}
+        />
+      )}
     </div>
   );
 }

@@ -139,29 +139,51 @@ def register(request):
         "refresh": refresh_token
     }, status=201)
 
-@csrf_exempt
+# @csrf_exempt
+# @require_GET
+# def get_user(request): 
+#     access_token = request.headers.get("Authorization")
+
+#     try:
+#         payload = decode_jwt(access_token)  
+#         user_id = payload.get("user_id")
+
+#         if not user_id:
+#             return JsonResponse({"error": "Invalid token"}, status=401)
+
+#         users_collection = db['users']
+#         user = users_collection.find_one({"_id": ObjectId(user_id)})
+
+#         if not user:
+#             return JsonResponse({"error": "User not found"}, status=404)
+
+#         user['_id'] = str(user['_id'])  
+
+
+#         return JsonResponse({"user": user}, status=200)
+
+#     except Exception as e:
+#         return JsonResponse({"error": "Invalid or expired token", "details": str(e)}, status=401)
+
+
 @require_GET
-def get_user(request): 
-    access_token = request.headers.get("Authorization")
-
+@jwt_required
+def profile(request): 
     try:
-        payload = decode_jwt(access_token)  
-        user_id = payload.get("user_id")
-
-        if not user_id:
-            return JsonResponse({"error": "Invalid token"}, status=401)
+        email = request.user.get("email")
+        if not email:
+            return JsonResponse({"error": "Invalid token payload"}, status=401)
 
         users_collection = db['users']
-        user = users_collection.find_one({"_id": ObjectId(user_id)})
+        user = users_collection.find_one({"email": email})
 
         if not user:
             return JsonResponse({"error": "User not found"}, status=404)
-        print(user)
-        user['_id'] = str(user['_id'])  
-        print('get_user func: ' + user['name'])
 
-        return JsonResponse({"user": user}, status=200)
+        user['_id'] = str(user['_id'])
+        user.pop("password", None)
+
+        return JsonResponse(user, status=200)
 
     except Exception as e:
-        return JsonResponse({"error": "Invalid or expired token", "details": str(e)}, status=401)
-    
+        return JsonResponse({"error": "Internal error", "details": str(e)}, status=500)

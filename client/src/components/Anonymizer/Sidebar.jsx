@@ -5,7 +5,7 @@ import {
   TbLayoutSidebarRightExpand,
 } from "react-icons/tb";
 
-const Sidebar = () => {
+const Sidebar = ({ userDocs }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showContent, setShowContent] = useState(true);
   const { user } = useAuth();
@@ -23,11 +23,11 @@ const Sidebar = () => {
     <div
       className={`${
         sidebarOpen ? "w-64" : "w-10"
-      } bg-gray-100 flex flex-col relative transition-all duration-300 ease-in-out`}
+      } bg-gray-100 flex flex-col relative transition-all duration-300 ease-in-out h-full`}
     >
-      {/* Collapse Button */}
+      {/* Toggle Sidebar Button */}
       <button
-        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 hover:bg-gray-300 hover:rounded-sm"
+        className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 hover:bg-gray-300 p-1 rounded-sm"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         {sidebarOpen ? (
@@ -39,18 +39,59 @@ const Sidebar = () => {
 
       {/* Sidebar Content */}
       {showContent && (
-        <div className="mt-12 px-4">
+        <div className="mt-4 px-4 flex flex-col h-full">
           {user ? (
-            <div>Show docs here...</div>
+            <>
+              {/* Section Title */}
+              <h3 className="text-sm text-gray-500 font-semibold mb-3 px-1 uppercase tracking-wide">
+                🗃️ Your Documents
+              </h3>
+
+              {/* Documents Card */}
+              <div className="flex-1 p-2 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col justify-start overflow-y-auto mb-4">
+                <ul className="space-y-2">
+                  {userDocs.length === 0 ? (
+                    <li className="text-gray-400 italic">
+                      No documents saved.
+                    </li>
+                  ) : (
+                    userDocs.map((doc, index) => (
+                      <li
+                        key={index}
+                        onClick={() => alert("nav to doc")}
+                        className="flex items-center gap-3 cursor-pointer rounded-lg p-3 hover:bg-gray-100 transition border border-gray-100"
+                      >
+                        {/* Doc Icon */}
+                        <div className="flex-shrink-0 h-full flex items-center">
+                          <div className="w-10 h-10 bg-[#006d77]/20 text-blue-600 flex items-center justify-center rounded-xl shadow-sm">
+                            <span className="text-xl">📄</span>
+                          </div>
+                        </div>
+
+                        {/* Doc Info */}
+                        <div className="flex flex-col overflow-hidden">
+                          <span className="text-sm font-semibold text-gray-800 truncate">
+                            {doc[0]}
+                          </span>
+                          <span className="text-sm text-gray-500 truncate">
+                            {doc[1]}
+                          </span>
+                        </div>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            </>
           ) : (
             <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="text-xs uppercase text-gray-400 tracking-wide mb-1">
+              <h3 className="text-xs text-gray-400 uppercase font-semibold mb-1">
                 Saving Feature 📄
-              </div>
-              <div className="text-sm text-gray-500 font-semibold ">
+              </h3>
+              <p className="text-sm text-gray-600">
                 Sign in to securely save your anonymized documents and access
                 them anytime.
-              </div>
+              </p>
             </div>
           )}
         </div>
