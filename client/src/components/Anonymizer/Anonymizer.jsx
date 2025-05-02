@@ -89,8 +89,10 @@ function Anonymizer() {
   }, [user?.email]);
 
   useEffect(() => {
-    fetchUserDocs();
-  }, [fetchUserDocs]);
+    if (user) {
+      fetchUserDocs();
+    }
+  }, [user, fetchUserDocs]);
 
   return (
     <div className="flex w-full min-h-full">
