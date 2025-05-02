@@ -20,12 +20,7 @@ function SavingModal({
   }, [userDocs]);
 
   const handleSave = () => {
-    if (!user) {
-      notify("Please log in to save your document", "warning");
-      return;
-    } else if (anonymizedText.length === 0) {
-      notify("Please anonymize the text before saving", "warning");
-    } else if (docName.length === 0) {
+    if (docName.length === 0) {
       notify("Please enter a document name", "warning");
     } else if (
       !userDocNames.includes(docName) ||
@@ -76,7 +71,7 @@ function SavingModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-2xl shadow-lg w-[90%] max-w-md p-6 animate-fadeIn">
-        <h1 className="text-xl font-semibold mb-4 text-gray-800">
+        <h1 className="text-xl font-semibold mb-4 text-[#0e5266]">
           Save Document
         </h1>
 
@@ -90,14 +85,14 @@ function SavingModal({
 
         <div className="flex justify-end gap-3">
           <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-6 py-2 rounded-full transition"
+            className="bg-[#b5e8ed] font- text-[#006d77] hover:bg-[#39b1bc] hover:text-white font-semibold rounded-full px-5 py-2 transition flex items-center"
             onClick={() => setModal(false)}
           >
             Cancel
           </button>
 
           <button
-            className="bg-[#f96e2a] hover:bg-[#78b3ce] text-white font-semibold px-6 py-2 rounded-full transition"
+            className="bg-[#ff8450] hover:bg-[#ffa764] text-white font-semibold rounded-full px-5 py-2 transition flex items-center"
             onClick={handleSave}
           >
             Save

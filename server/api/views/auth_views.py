@@ -169,8 +169,6 @@ def register(request):
 @require_GET
 @jwt_required
 def profile(request): 
-    print("Decoded JWT payload:", request.user)
-
     try:
         email = request.user.get("email")
         if not email:

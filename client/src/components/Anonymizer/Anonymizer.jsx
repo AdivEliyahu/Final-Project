@@ -16,7 +16,7 @@ function Anonymizer() {
   const [userDocs, setUserDocs] = useState([]);
 
   const notify = (
-    message = "Oh Sanp! Something went wrong :(",
+    message = "Oh Snap! Something went wrong.",
     type = "error"
   ) => {
     toast[type](message, {
@@ -71,6 +71,13 @@ function Anonymizer() {
   };
 
   const handleSavingDocument = () => {
+    if (!user) {
+      notify("Sign in to save your document.", "warning");
+      return;
+    } else if (!anonymizedText) {
+      notify("Please anonymize before saving.", "warning");
+      return;
+    }
     setModal(!modal);
   };
 
@@ -94,8 +101,13 @@ function Anonymizer() {
     }
   }, [user, fetchUserDocs]);
 
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
   return (
     <div className="flex w-full min-h-full">
+      {/* {<span>{user.email}</span>} */}
       {/* Sidebar */}
       <div className="hidden md:flex">
         <Sidebar userDocs={userDocs} />
@@ -179,17 +191,21 @@ function Anonymizer() {
               </div>
 
               {/* Save Button (only visible on small screens) */}
-              <div className="group flex flex-col items-center mt-4 lg:hidden">
-                <button
-                  className="text-[#156f8d] hover:text-[#0e5266] flex flex-col items-center gap-2"
-                  onClick={() => alert("Save feature here")}
-                >
-                  <div className="text-2xl group-hover:animate-bounce">📄</div>
-                  <div className="text-xs uppercase font-bold tracking-wide text-center">
-                    Save Document
-                  </div>
-                </button>
-              </div>
+              {user && (
+                <div className="group flex flex-col items-center mt-4 lg:hidden">
+                  <button
+                    className="text-[#156f8d] hover:text-[#0e5266] flex flex-col items-center gap-2"
+                    onClick={() => handleSavingDocument()}
+                  >
+                    <div className="text-2xl group-hover:animate-bounce">
+                      📄
+                    </div>
+                    <div className="text-xs uppercase font-bold tracking-wide text-center">
+                      Save Document
+                    </div>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>
