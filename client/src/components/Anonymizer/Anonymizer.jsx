@@ -14,6 +14,7 @@ function Anonymizer() {
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const [userDocs, setUserDocs] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const notify = (
     message = "Oh Snap! Something went wrong.",
@@ -72,10 +73,13 @@ function Anonymizer() {
 
   const handleSavingDocument = () => {
     if (!user) {
-      notify("Sign in to save your document.", "warning");
+      notify("Sign in to save your document.", "info");
       return;
     } else if (!anonymizedText) {
-      notify("Please anonymize before saving.", "warning");
+      notify("Please anonymize before saving.", "info");
+      return;
+    } else if (userDocs.length >= 10) {
+      notify("You can only save up to 10 documents.", "error");
       return;
     }
     setModal(!modal);
@@ -101,13 +105,41 @@ function Anonymizer() {
     }
   }, [user, fetchUserDocs]);
 
-  useEffect(() => {
-    console.log("user", user);
-  }, [user]);
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    if (event.dataTransfer.files.length !== 1) {
+      notify("Only one file is supported for drag and drop.", "error");
+      return;
+    }
+    const file = event.dataTransfer.files[0];
+    if (file && file.type === "text/plain") {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setOriginalText(e.target.result);
+      };
+      reader.readAsText(file);
+    } else {
+      notify("Only .txt files are supported for drag and drop.", "error");
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+  };
 
   return (
     <div className="flex w-full min-h-full">
-      {/* {<span>{user.email}</span>} */}
       {/* Sidebar */}
       <div className="hidden md:flex">
         <Sidebar userDocs={userDocs} />
@@ -120,20 +152,43 @@ function Anonymizer() {
             {/* Textareas + Save */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_100px] gap-6 w-full">
               {/* Original Text */}
-              <div className="relative flex flex-col">
+              <div
+                className="relative flex flex-col"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+              >
                 <p className="text-sm font-semibold text-[#0e5266] mb-2">
                   Original Text
                 </p>
+
                 <textarea
                   className={`flex-1 min-h-[500px] bg-[#c8dde1] border-none rounded-md p-4 font-mono text-base leading-[1.5] text-[#374151] resize-none shadow-inner placeholder:text-[#9ca3af] transition-all duration-300 ${
                     loading ? "opacity-50" : ""
                   }`}
-                  placeholder="Paste or type the text you’d like to anonymize…"
+                  placeholder="Paste, type or drop the text you’d like to anonymize…"
                   value={originalText}
                   onChange={(e) => setOriginalText(e.target.value)}
                   disabled={loading}
                 />
-                {/* Shimmer Overlay */}
+
+                {/* Drag Indicator Overlay */}
+                {isDragging && (
+                  <div className="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center pointer-events-none rounded-md">
+                    {
+                      <img
+                        src="/assets/upload-file-icon.png"
+                        alt="Upload Icon"
+                        className="w-20 h-20 mt-2"
+                      />
+                    }
+                    <p className="text-sm mt-2 text-gray-600">
+                      Drop your file here
+                    </p>
+                  </div>
+                )}
+
                 {loading && (
                   <div className="absolute inset-0 rounded-md bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer pointer-events-none"></div>
                 )}
