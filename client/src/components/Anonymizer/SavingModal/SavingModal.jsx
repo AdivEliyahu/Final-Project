@@ -74,6 +74,9 @@ function SavingModal({
         <h1 className="text-xl font-semibold mb-4 text-[#0e5266]">
           Save Document
         </h1>
+        <p className={docName.length === 40 ? "text-red-600 mb-2" : "hidden"}>
+          File name must be under 40 characters.
+        </p>
 
         <input
           type="text"
@@ -81,6 +84,7 @@ function SavingModal({
           value={docName}
           onChange={(e) => setDocName(e.target.value)}
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          maxLength={40}
         />
 
         <div className="flex justify-end gap-3">
