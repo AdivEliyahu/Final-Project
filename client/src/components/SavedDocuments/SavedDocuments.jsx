@@ -40,6 +40,31 @@ function SavedDocuments() {
       });
   }, [user?.email]);
 
+  const handleDownload = (docName) => {
+    axios
+      .get("http://localhost:8000/get_user_doc", {
+        params: { email: user.email, docName },
+      })
+      .then((result) => {
+        const text = result.data.text;
+        const blob = new Blob([text], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = `${docName}-Anonify.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        notify("Download Successful!", "success");
+      })
+      .catch((error) => {
+        notify("Failed to download document.", "error");
+        console.error("Download error:", error);
+      });
+  };
+
   const indexOfLastDoc = currentPage * docsPerPage;
   const indexOfFirstDoc = indexOfLastDoc - docsPerPage;
   const currentDocs = userDocs.slice(indexOfFirstDoc, indexOfLastDoc);
@@ -98,7 +123,7 @@ function SavedDocuments() {
                         />
                         <Download
                           className="transition-transform duration-200 hover:scale-105"
-                          onClick={() => alert("download to be implemented")}
+                          onClick={() => handleDownload(doc[0])}
                         />
                       </div>
                     </button>

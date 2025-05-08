@@ -22,6 +22,7 @@ urlpatterns = [
     path('anonymize/', anonymize_entities, name='extract_entities'),
     path('save_document/', save_document),
     path('get_user_doc_names/', get_user_doc_names),
+    path('get_user_doc/', get_user_doc),
     
     path('test',test), # Remove later test only
     path('protected_view',protected_view), # Remove later test only

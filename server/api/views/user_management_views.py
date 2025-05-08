@@ -62,4 +62,31 @@ def get_user_doc_names(request):
         return JsonResponse({"docNames": doc_names}, status=200)
 
     except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500) 
+    
+@require_GET
+def get_user_doc(request):
+    try:
+        email = request.GET.get("email")
+        doc_name = request.GET.get("docName")
+
+        if not all([email, doc_name]):
+            return JsonResponse({"error": "Email and Document Name are required."}, status=400)
+
+        users_docs_collection = db["usersDocs"]
+        user_docs_instance = users_docs_collection.find_one({"email": email})
+
+        if not user_docs_instance:
+            return JsonResponse({"error": "User not found."}, status=404)
+
+        user_docs = user_docs_instance['user_docs']
+
+        if doc_name not in user_docs:
+            return JsonResponse({"error": "Document not found."}, status=404)
+
+        document = user_docs[doc_name]
+
+        return JsonResponse(document, status=200)
+
+    except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
