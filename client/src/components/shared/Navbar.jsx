@@ -91,11 +91,16 @@ export default function Navbar() {
             About
           </Link>
         </li>
-        <li>
-          <Link to="/" className="hover:text-[#83c5be] transition">
-            F.A.Q
-          </Link>
-        </li>
+        {user ? (
+          <li>
+            <Link
+              to="/saved-documents"
+              className="hover:text-[#83c5be] transition"
+            >
+              Saved Documents
+            </Link>
+          </li>
+        ) : null}
       </ul>
 
       {/* Desktop Auth Buttons */}

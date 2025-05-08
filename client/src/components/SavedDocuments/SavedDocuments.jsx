@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Pencil } from "lucide-react";
+import { Pencil, Download } from "lucide-react";
 
 function SavedDocuments() {
   const [userDocs, setUserDocs] = useState([]);
@@ -58,7 +58,7 @@ function SavedDocuments() {
       <div className="flex pb-4 text-[#15143966] font-[600] ">
         <div className="w-1/3 pl-4">FILE NAME</div>
         <div className="w-1/3 text-center">LAST CHANGE</div>
-        <div className="w-1/3 text-right pr-4">Edit</div>
+        <div className="w-1/3 text-right pr-4">EDIT</div>
       </div>
       {currentDocs.map((doc, index) => (
         <div
@@ -74,11 +74,17 @@ function SavedDocuments() {
           </div>
           <div className="w-1/3 text-center text-[#235F6B]">{doc[1]}</div>
           <div className="w-1/3 flex justify-end">
-            <button
-              className="text-orange-500 hover:text-orange-600"
-              onClick={() => alert("edit to be implemented")}
-            >
-              <Pencil size={20} />
+            <button className="text-orange-500 hover:text-orange-600">
+              <div className="flex gap-2 items-center ">
+                <Pencil
+                  className="transition-transform duration-200 hover:scale-125"
+                  onClick={() => alert("edit to be implemented")}
+                />
+                <Download
+                  className="transition-transform duration-200 hover:scale-125"
+                  onClick={() => alert("download to be implemented")}
+                />
+              </div>
             </button>
           </div>
         </div>
