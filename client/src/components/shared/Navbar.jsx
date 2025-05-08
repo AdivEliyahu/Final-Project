@@ -62,7 +62,7 @@ export default function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [menuOpen, menuRef]);
 
   return (
     <nav className="flex items-center justify-between p-4 bg-[#006d77] text-white relative">
@@ -91,7 +91,7 @@ export default function Navbar() {
             About
           </Link>
         </li>
-        {user ? (
+        {user && (
           <li>
             <Link
               to="/saved-documents"
@@ -100,7 +100,7 @@ export default function Navbar() {
               Saved Documents
             </Link>
           </li>
-        ) : null}
+        )}
       </ul>
 
       {/* Desktop Auth Buttons */}

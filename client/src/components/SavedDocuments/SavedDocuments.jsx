@@ -65,11 +65,11 @@ function SavedDocuments() {
           key={index}
           className={
             index % 2 === 0
-              ? "flex items-center p-4 rounded-lg hover:shadow-md md:py-4 lg:py-6 transition bg-[#92b8c0]"
-              : "flex items-center p-4 rounded-lg hover:shadow-lg md:py-4 lg:py-6 transition"
+              ? "flex items-center p-4 rounded-lg hover:shadow-md md:py-4 lg:py-6 transition bg-[#92b8c0] hover:bg-[#92b8c0]/80"
+              : "flex items-center p-4 rounded-lg hover:shadow-lg md:py-4 lg:py-6 transition hover:bg-stone-200"
           }
         >
-          <div className="w-1/3 text-teal-800 font-medium truncate text-[#15143966] pr-2">
+          <div className="w-1/3 text-teal-800 font-medium truncate text-[#15143966] pr-2 font-semibold">
             {doc[0]}
           </div>
           <div className="w-1/3 text-center text-[#235F6B]">{doc[1]}</div>
@@ -77,11 +77,11 @@ function SavedDocuments() {
             <button className="text-orange-500 hover:text-orange-600">
               <div className="flex gap-2 items-center ">
                 <Pencil
-                  className="transition-transform duration-200 hover:scale-125"
+                  className="transition-transform duration-200 hover:scale-105"
                   onClick={() => alert("edit to be implemented")}
                 />
                 <Download
-                  className="transition-transform duration-200 hover:scale-125"
+                  className="transition-transform duration-200 hover:scale-105"
                   onClick={() => alert("download to be implemented")}
                 />
               </div>
@@ -90,7 +90,7 @@ function SavedDocuments() {
         </div>
       ))}
 
-      <div className="flex justify-between items-center mt-20">
+      <div className="flex justify-between items-center mt-20 ">
         <button
           onClick={goToPrevPage}
           disabled={currentPage === 1}
@@ -98,9 +98,20 @@ function SavedDocuments() {
         >
           &#11013; Previous
         </button>
-        <span className="text-sm">
-          Page {currentPage} of {totalPages}
-        </span>
+        <div className="flex justify-center space-x-3 my-8">
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <button
+              key={index}
+              className={`w-3 h-3 rounded-full border 
+            ${
+              currentPage - 1 === index
+                ? "bg-[#1d6b73] border-[#1d6b73]"
+                : "border-[#b7cfd5]"
+            }
+            transition duration-500`}
+            />
+          ))}
+        </div>
         <button
           onClick={goToNextPage}
           disabled={currentPage === totalPages}
