@@ -132,46 +132,48 @@ function SavedDocuments() {
               ))}
             </div>
 
-            <div className="flex justify-between items-center mt-5 px-4 pb-10">
-              <button
-                onClick={goToPrevPage}
-                className={`px-4 py-2 font-semibold border border-[#f96e2a] text-[#f96e2a] bg-transparent hover:bg-[#f96e2a] hover:text-white rounded transition-colors duration-300 ${
-                  currentPage === 1 ? "invisible" : ""
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <ChevronLeft className="h-4 w-4" /> Previous
-                </span>
-              </button>
+            <div className="pt-4 border-t border-gray-200">
+              <div className="flex justify-between items-center px-4">
+                <button
+                  onClick={goToPrevPage}
+                  className={`px-4 py-2 font-semibold border border-[#f96e2a] text-[#f96e2a] bg-transparent hover:bg-[#f96e2a] hover:text-white rounded transition-colors duration-300 ${
+                    currentPage === 1 ? "invisible" : ""
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <ChevronLeft className="h-4 w-4" /> Previous
+                  </span>
+                </button>
 
-              <div className="flex space-x-3 items-center">
-                {Array.from({ length: Math.max(1, totalPages) }).map(
-                  (_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentPage(index + 1)}
-                      className={`w-3 h-3 rounded-full border ${
-                        currentPage - 1 === index
-                          ? "bg-[#1d6b73] border-[#1d6b73]"
-                          : "border-[#b7cfd5]"
-                      } transition duration-300`}
-                    />
-                  )
-                )}
+                <div className="flex space-x-3 items-center">
+                  {Array.from({ length: Math.max(1, totalPages) }).map(
+                    (_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={`w-3 h-3 rounded-full border ${
+                          currentPage - 1 === index
+                            ? "bg-[#1d6b73] border-[#1d6b73]"
+                            : "border-[#b7cfd5]"
+                        } transition duration-300`}
+                      />
+                    )
+                  )}
+                </div>
+
+                <button
+                  onClick={goToNextPage}
+                  className={`px-4 py-2 font-semibold border border-[#f96e2a] text-[#f96e2a] bg-transparent hover:bg-[#f96e2a] hover:text-white rounded transition-colors duration-300 ${
+                    currentPage === totalPages || totalPages === 0
+                      ? "invisible"
+                      : ""
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    Next <ChevronRight className="h-4 w-4" />
+                  </span>
+                </button>
               </div>
-
-              <button
-                onClick={goToNextPage}
-                className={`px-4 py-2 font-semibold border border-[#f96e2a] text-[#f96e2a] bg-transparent hover:bg-[#f96e2a] hover:text-white rounded transition-colors duration-300 ${
-                  currentPage === totalPages || totalPages === 0
-                    ? "invisible"
-                    : ""
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  Next <ChevronRight className="h-4 w-4" />
-                </span>
-              </button>
             </div>
           </>
         )}
