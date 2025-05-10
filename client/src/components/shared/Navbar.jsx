@@ -87,7 +87,7 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link to="/" className="hover:text-[#83c5be] transition">
+          <Link to="/about" className="hover:text-[#83c5be] transition">
             About
           </Link>
         </li>

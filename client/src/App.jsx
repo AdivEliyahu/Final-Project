@@ -5,6 +5,7 @@ import Login from "./components/Auth/Login/Login";
 import UserSettings from "./components/UserManagement/UserSettings/UserSettings";
 import Register from "./components/Auth/Register/Register";
 import ProtectedRoute from "./context/ProtectedRoute";
+import About from "./components/About/About";
 import Navbar from "./components/shared/Navbar";
 import Footer from "./components/shared/Footer";
 import Anonymizer from "./components/Anonymizer/Anonymizer";
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/anonymizer" element={<Anonymizer />} />
+          <Route path="/about" element={<About />} />
           <Route
             path="/settings"
             element={<ProtectedRoute element={<UserSettings />} />}
