@@ -62,7 +62,7 @@ export default function Navbar() {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [menuOpen, menuRef]);
 
   return (
     <nav className="flex items-center justify-between p-4 bg-[#006d77] text-white relative">
@@ -91,11 +91,16 @@ export default function Navbar() {
             About
           </Link>
         </li>
-        <li>
-          <Link to="/" className="hover:text-[#83c5be] transition">
-            F.A.Q
-          </Link>
-        </li>
+        {user && (
+          <li>
+            <Link
+              to="/saved-documents"
+              className="hover:text-[#83c5be] transition"
+            >
+              Saved Documents
+            </Link>
+          </li>
+        )}
       </ul>
 
       {/* Desktop Auth Buttons */}

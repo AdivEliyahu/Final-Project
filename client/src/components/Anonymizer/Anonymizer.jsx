@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
 import SavingModal from "./SavingModal/SavingModal";
+import { Copy, ClipboardCheck } from "lucide-react";
 
 function Anonymizer() {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ function Anonymizer() {
   const [modal, setModal] = useState(false);
   const [userDocs, setUserDocs] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const notify = (
     message = "Oh Snap! Something went wrong.",
@@ -69,6 +71,14 @@ function Anonymizer() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(anonymizedText).then(() => {
+      setCopied(true);
+      notify("Text copied to clipboard!", "success");
+      setTimeout(() => setCopied(false), 10000);
+    });
   };
 
   const handleSavingDocument = () => {
@@ -195,7 +205,25 @@ function Anonymizer() {
               </div>
 
               {/* Anonymized Text */}
-              <div className="flex flex-col">
+              <div className="relative flex flex-col">
+                {anonymizedText && (
+                  <button
+                    onClick={handleCopy}
+                    className="absolute top-7 right-0 bg-[#bcd2d6] text-white px-1 py-1 text-xs rounded hover:bg-[#0e5266] transition"
+                  >
+                    {copied ? (
+                      <span className="flex items-center gap-1 max-w-[70px]">
+                        <ClipboardCheck size={15} />
+                        Copied!
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 max-w-[70px]">
+                        <Copy size={15} />
+                        Copy
+                      </span>
+                    )}
+                  </button>
+                )}
                 <p className="text-sm font-semibold text-[#0e5266] mb-2">
                   Anonymized Text
                 </p>
