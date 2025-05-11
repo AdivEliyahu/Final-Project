@@ -10,7 +10,7 @@ const About = () => {
       icon: "📄",
       category: "research",
       description:
-        "We began by studying privacy regulations and existing anonymization tools like Microsoft Presidio, ARX, and Textwash. Our aim was to understand their limitations and define a more context-aware approach.",
+        "We began by studying privacy approaches and existing anonymization tools like Microsoft Presidio, Eden AI and more. Our aim was to understand their limitations and define a more context-aware approach.",
       image: "/About-images/TAB article.png",
     },
     {
@@ -31,7 +31,7 @@ const About = () => {
     },
     {
       title: "LLM-Based Classification",
-      icon: "🤖",
+      icon: "💻",
       category: "development",
       description:
         "We evaluated GPT-2, T5, GPT-3.5-turbo, and GPT-4o-mini. By binarizing named entities as sensitive or non-sensitive, we achieved more precise masking while maintaining context.",
@@ -42,8 +42,8 @@ const About = () => {
       icon: "⚡",
       category: "development",
       description:
-        "We refined prompts, handled runtime errors like 'Run Timed Out', and optimized speed and masking reliability throughout the pipeline.",
-      image: null,
+        "We refined prompts, tested assistant, and optimized speed and masking reliability throughout the pipeline.",
+      image: "/About-images/prompt engineering.png",
     },
     {
       title: "Metrics and Evaluation",
@@ -89,13 +89,13 @@ const About = () => {
   const openModal = (image) => {
     if (image) {
       setModalImage(image);
-      document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+      document.body.style.overflow = "hidden";
     }
   };
 
   const closeModal = () => {
     setModalImage(null);
-    document.body.style.overflow = "auto"; // Re-enable scrolling
+    document.body.style.overflow = "auto";
   };
 
   return (
@@ -134,16 +134,17 @@ const About = () => {
           {filteredSteps.map((step, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow transform hover:-translate-y-1 duration-300 flex flex-col h-full"
+              className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-default flex flex-col h-full"
             >
               {/* Card header */}
               <div className="p-6 flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-3xl">{step.icon}</span>
                   <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    className={`text-xs cursor-pointer font-bold px-3 py-1 rounded-full ${
                       categoryColors[step.category]
                     }`}
+                    onClick={() => setActiveFilter(step.category)}
                   >
                     {step.category}
                   </span>
@@ -209,29 +210,8 @@ const About = () => {
           onClick={closeModal}
         >
           <div className="relative">
-            {/* Close button */}
-            <button
-              onClick={closeModal}
-              className="absolute -top-12 right-0 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
             {/* Modal content */}
-            <div className="w-full h-96 flex items-center justify-center bg-gray-100 p-6">
+            <div className="w-full h-120 flex items-center justify-center bg-gray-100 p-6">
               <img
                 src={`assets${modalImage}`}
                 alt="Enlarged view"

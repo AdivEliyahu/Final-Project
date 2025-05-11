@@ -18,7 +18,6 @@ urlpatterns = [
     path('register', register),
     path('csrf', set_csrf_token),
     path('profile', profile),
-    # path('get_user', get_user),
     path('anonymize/', anonymize_entities, name='extract_entities'),
     path('save_document/', save_document),
     path('get_user_doc_names/', get_user_doc_names),

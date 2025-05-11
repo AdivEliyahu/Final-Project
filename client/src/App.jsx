@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
 import Login from "./components/Auth/Login/Login";
-import UserSettings from "./components/UserManagement/UserSettings/UserSettings";
 import Register from "./components/Auth/Register/Register";
 import ProtectedRoute from "./context/ProtectedRoute";
 import About from "./components/About/About";
@@ -25,10 +24,6 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/anonymizer" element={<Anonymizer />} />
           <Route path="/about" element={<About />} />
-          <Route
-            path="/settings"
-            element={<ProtectedRoute element={<UserSettings />} />}
-          />
           <Route
             path="/saved-documents"
             element={<ProtectedRoute element={<SavedDocuments />} />}
