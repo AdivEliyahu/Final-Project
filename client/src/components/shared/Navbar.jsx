@@ -155,12 +155,17 @@ export default function Navbar() {
         <Link to="/" onClick={() => handleNav("/")}>
           Home
         </Link>
-        <Link to="/" onClick={() => handleNav("/")}>
+        <Link to="/about" onClick={() => handleNav("/about")}>
           About
         </Link>
-        <Link to="/" onClick={() => handleNav("/")}>
-          F.A.Q
-        </Link>
+        {user && (
+          <Link
+            to="/saved-documents"
+            onClick={() => handleNav("/saved-documents")}
+          >
+            Saved Documents
+          </Link>
+        )}
 
         {/* Mobile Auth Buttons */}
         {user ? (

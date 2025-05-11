@@ -1,4 +1,14 @@
 import React, { useState } from "react";
+import {
+  TestTubeDiagonal,
+  Earth,
+  ChartCandlestick,
+  Calculator,
+  BrainCircuit,
+  Microscope,
+  Database,
+  RemoveFormatting,
+} from "lucide-react";
 
 const About = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -7,7 +17,7 @@ const About = () => {
   const steps = [
     {
       title: "Research and Background",
-      icon: "📄",
+      icon: <RemoveFormatting size={35} />,
       category: "research",
       description:
         "We began by studying privacy approaches and existing anonymization tools like Microsoft Presidio, Eden AI and more. Our aim was to understand their limitations and define a more context-aware approach.",
@@ -15,7 +25,7 @@ const About = () => {
     },
     {
       title: "Dataset Exploration and Preprocessing",
-      icon: "📊",
+      icon: <Database size={35} />,
       category: "data",
       description:
         "We used datasets like the PII Detection Dataset and Text Anonymization Benchmark. We parsed structured annotations, mapped entity labels, and split the data into training, validation, and test sets.",
@@ -23,7 +33,7 @@ const About = () => {
     },
     {
       title: "Named Entity Recognition (NER)",
-      icon: "🧠",
+      icon: <Microscope size={35} />,
       category: "development",
       description:
         "We trained a spaCy-based NER model to extract entities such as names, IDs, and addresses. It achieved 71.85% accuracy and replaced sensitive tokens using placeholders like <PERSON>.",
@@ -31,7 +41,7 @@ const About = () => {
     },
     {
       title: "LLM-Based Classification",
-      icon: "💻",
+      icon: <BrainCircuit size={35} />,
       category: "development",
       description:
         "We evaluated GPT-2, T5, GPT-3.5-turbo, and GPT-4o-mini. By binarizing named entities as sensitive or non-sensitive, we achieved more precise masking while maintaining context.",
@@ -39,7 +49,7 @@ const About = () => {
     },
     {
       title: "System Optimization",
-      icon: "⚡",
+      icon: <Calculator size={35} />,
       category: "development",
       description:
         "We refined prompts, tested assistant, and optimized speed and masking reliability throughout the pipeline.",
@@ -47,7 +57,7 @@ const About = () => {
     },
     {
       title: "Metrics and Evaluation",
-      icon: "📏",
+      icon: <ChartCandlestick size={35} />,
       category: "evaluation",
       description:
         "We measured cosine similarity to evaluate semantic preservation and used precision, recall, and F1 scores for classification. Our best cosine similarity score averaged 0.91.",
@@ -55,7 +65,7 @@ const About = () => {
     },
     {
       title: "Experiments and Insights",
-      icon: "🧪",
+      icon: <TestTubeDiagonal size={35} />,
       category: "evaluation",
       description:
         "We analyzed the relationship between the number of named entities and similarity scores. The results showed that entity quantity didn't strongly affect output similarity.",
@@ -63,7 +73,7 @@ const About = () => {
     },
     {
       title: "Final Deployment",
-      icon: "🚀",
+      icon: <Earth size={35} />,
       category: "deployment",
       description:
         "Built with Django (backend), React (frontend), and MongoDB (database). Users can upload, anonymize, view, and download documents easily with a clean UI.",
@@ -137,11 +147,19 @@ const About = () => {
               className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-default flex flex-col h-full"
             >
               {/* Card header */}
-              <div className="p-6 flex flex-col">
+              <div className="p-6 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xl font-bold text-gray-900 mr-2">
+                    {index + 1 + ". " + step.title}
+                  </h3>
                   <span className="text-3xl">{step.icon}</span>
+                </div>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  {step.description}
+                </p>
+                <div className="mt-auto">
                   <span
-                    className={`text-xs cursor-pointer font-bold px-3 py-1 rounded-full ${
+                    className={`text-xs cursor-pointer font-bold px-3 py-1 rounded-full w-fit ${
                       categoryColors[step.category]
                     }`}
                     onClick={() => setActiveFilter(step.category)}
@@ -149,17 +167,11 @@ const About = () => {
                     {step.category}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  {index + 1 + ". " + step.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
-                  {step.description}
-                </p>
               </div>
 
               {/* Image or empty space section */}
               <div className="mt-auto">
-                {step.image ? (
+                {step.image && (
                   <div
                     className="h-48 overflow-hidden bg-gray-100 border-t border-gray-100 cursor-pointer relative group flex items-center justify-center"
                     onClick={() => openModal(step.image)}
@@ -175,11 +187,7 @@ const About = () => {
                       className="w-full h-full object-contain p-2"
                     />
                   </div>
-                ) : (
-                  <div className="h-12 bg-gray-50 border-t border-gray-100"></div>
                 )}
-                {/* Bottom gray area - always present */}
-                <div className="h-6 bg-gray-50 border-t border-gray-100"></div>
               </div>
             </div>
           ))}
