@@ -134,6 +134,7 @@ export default function Navbar() {
       <div className="md:hidden flex items-center">
         <button
           onClick={() => setMenuOpen(!menuOpen)}
+          onMouseDown={(e) => e.stopPropagation()}
           className="text-3xl focus:outline-none transition-transform duration-200"
         >
           {menuOpen ? "✖" : "☰"}
