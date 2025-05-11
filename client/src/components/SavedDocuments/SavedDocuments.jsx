@@ -2,13 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Pencil, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import Cookies from "js-cookie";
+import { Trash2, Download, ChevronLeft, ChevronRight } from "lucide-react";
 
 function SavedDocuments() {
   const [userDocs, setUserDocs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const docsPerPage = 5;
   const { user } = useAuth();
+  const [csrfToken, setCsrfToken] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/csrf", { withCredentials: true })
+      .then(() => setCsrfToken(Cookies.get("csrftoken")))
+      .catch((error) => console.log("Error fetching CSRF token:", error));
+  }, []);
 
   const notify = (
     message = "Oh Snap! Something went wrong.",
@@ -39,6 +48,34 @@ function SavedDocuments() {
         console.error("Fetch error:", error);
       });
   }, [user?.email]);
+
+  const handleRemove = (docName) => {
+    if (
+      window.confirm(`Are you sure you want to delete '${docName}' document?`)
+    ) {
+      axios
+        .post(
+          "http://localhost:8000/delete_user_doc",
+          {
+            email: user.email,
+            docName: docName,
+          },
+          {
+            headers: { "X-CSRFToken": csrfToken },
+            withCredentials: true,
+          }
+        )
+        .then((result) => {
+          if (result.status === 200) {
+            notify("Document deleted successfully!", "success");
+            setUserDocs(userDocs.filter((doc) => doc[0] !== docName));
+          }
+        })
+        .catch((error) => {
+          notify("Failed to delete document. Try again later.", "error");
+        });
+    }
+  };
 
   const handleDownload = (docName) => {
     axios
@@ -116,14 +153,14 @@ function SavedDocuments() {
                   </div>
                   <div className="w-1/3 flex justify-end">
                     <button className="text-orange-500 hover:text-orange-600">
-                      <div className="flex gap-2 items-center ">
-                        <Pencil
-                          className="transition-transform duration-200 hover:scale-105"
-                          onClick={() => alert("edit to be implemented")}
-                        />
+                      <div className="flex gap-4 items-center ">
                         <Download
                           className="transition-transform duration-200 hover:scale-105"
                           onClick={() => handleDownload(doc[0])}
+                        />
+                        <Trash2
+                          className="text-red-500 transition-transform duration-200 hover:scale-105"
+                          onClick={() => handleRemove(doc[0])}
                         />
                       </div>
                     </button>
