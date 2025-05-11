@@ -1,10 +1,10 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./Register.css";
 import { useAuth } from "../../../context/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function RegisterForm() {
   const [email, setEmail] = useState("");
@@ -66,7 +66,7 @@ export default function RegisterForm() {
           if (response.status === 201) {
             login(response.data.user, response.data.access);
             notify("Registration successful!", "success");
-            nav("/"); // Change that later - just for debug
+            nav("/");
           }
         })
         .catch((error) => {
@@ -132,13 +132,6 @@ export default function RegisterForm() {
             >
               Sign Up
             </button>
-
-            <span className="or-text text-gray-500 text-sm mt-4">or</span>
-            <div className="flex justify-center gap-4 mt-2 text-[#f96e2a] text-xl font-bold">
-              <a href="#">G+</a>
-              <a href="#">f</a>
-              <a href="#">t</a>
-            </div>
           </form>
         </div>
       </div>
