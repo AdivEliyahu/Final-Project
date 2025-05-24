@@ -4,7 +4,7 @@ from .auth_views import jwt_required
 import json
 from django.http import JsonResponse
 from openai import OpenAI
-
+import re
 
 nlp = None
 
@@ -17,6 +17,19 @@ def load_ner_model():
         nlp = spacy.load(model_path)
     return nlp
 
+def find_regex(text, entities):
+    email_regex = r'\b[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
+    matches = re.finditer(email_regex, text)
+    for match in matches:
+        email = match.group()
+        label = "EMAIL"
+        start_char = match.start()
+        end_char = match.end()
+        entities.append([email, label, start_char, end_char])
+    return entities
+
+
+
 
 def get_entities(text):
     if nlp is None:
@@ -24,6 +37,7 @@ def get_entities(text):
 
     doc = nlp(text)
     entities = [[ent.text, ent.label_, ent.start_char, ent.end_char] for ent in doc.ents]
+    entities = find_regex(text, entities)
     output = {
         "text": text,
         "entities": entities
@@ -38,7 +52,7 @@ You will receive a text along with a list of named entities extracted using a Sp
 - The entity itself (word or phrase).
 - The provided character offsets (start and end positions).
 - The identity type of the entity (`DIRECT`, `NO_MASK`, or `QUASI`).
-- The entity type (`PERSON`, `CODE`, `LOC`, `ORG`, `DEM`, `DATETIME`, `QUANTITY`, `MISC`).
+- The entity type (`PERSON`, `CODE`, `LOC`, `ORG`, `DEM`, `DATETIME`, `QUANTITY`, `EMAIL`, `MISC`).
 
 ### **Input format:**
 A JSON object containing:
@@ -55,7 +69,7 @@ A JSON object with a `"named_entities"` key containing a list of objects, where 
 - `"start_offset"`: The provided starting index of the entity in the text.
 - `"end_offset"`: The provided ending index of the entity in the text.
 - `"identifier_type"`: One of (`DIRECT`, `NO_MASK`, `QUASI`).
-- `"entity_type"`: One of (`PERSON`, `CODE`, `LOC`, `ORG`, `DEM`, `DATETIME`, `QUANTITY`, `MISC`).
+- `"entity_type"`: One of (`PERSON`, `CODE`, `LOC`, `ORG`, `DEM`, `DATETIME`, `QUANTITY`, `EMAIL`, `MISC`).
 
 ---
 
