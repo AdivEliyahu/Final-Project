@@ -2,9 +2,9 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home/Home";
 import Login from "./components/Auth/Login/Login";
-import UserSettings from "./components/UserManagement/UserSettings/UserSettings";
 import Register from "./components/Auth/Register/Register";
 import ProtectedRoute from "./context/ProtectedRoute";
+import About from "./components/About/About";
 import Navbar from "./components/shared/Navbar";
 import Footer from "./components/shared/Footer";
 import Anonymizer from "./components/Anonymizer/Anonymizer";
@@ -23,10 +23,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/anonymizer" element={<Anonymizer />} />
-          <Route
-            path="/settings"
-            element={<ProtectedRoute element={<UserSettings />} />}
-          />
+          <Route path="/about" element={<About />} />
           <Route
             path="/saved-documents"
             element={<ProtectedRoute element={<SavedDocuments />} />}

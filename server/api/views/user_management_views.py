@@ -90,3 +90,28 @@ def get_user_doc(request):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+@require_POST
+def delete_user_doc(request):
+    try:
+        data = json.loads(request.body)
+        email = data.get("email")
+        doc_name = data.get("docName")
+
+        if not all([email, doc_name]):
+            return JsonResponse({"error": "Email and Document Name are required."}, status=400)
+
+        users_docs_collection = db["usersDocs"]
+        result = users_docs_collection.update_one(
+            {"email": email},
+            {"$unset": {f"user_docs.{doc_name}": ""}}
+        )
+
+        if result.modified_count == 0:
+            return JsonResponse({"error": "Document not found."}, status=404)
+
+        return JsonResponse({"message": "Document deleted successfully."}, status=200)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

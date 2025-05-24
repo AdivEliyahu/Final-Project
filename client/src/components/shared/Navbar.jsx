@@ -87,7 +87,7 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link to="/" className="hover:text-[#83c5be] transition">
+          <Link to="/about" className="hover:text-[#83c5be] transition">
             About
           </Link>
         </li>
@@ -134,6 +134,7 @@ export default function Navbar() {
       <div className="md:hidden flex items-center">
         <button
           onClick={() => setMenuOpen(!menuOpen)}
+          onMouseDown={(e) => e.stopPropagation()}
           className="text-3xl focus:outline-none transition-transform duration-200"
         >
           {menuOpen ? "✖" : "☰"}
@@ -155,12 +156,17 @@ export default function Navbar() {
         <Link to="/" onClick={() => handleNav("/")}>
           Home
         </Link>
-        <Link to="/" onClick={() => handleNav("/")}>
+        <Link to="/about" onClick={() => handleNav("/about")}>
           About
         </Link>
-        <Link to="/" onClick={() => handleNav("/")}>
-          F.A.Q
-        </Link>
+        {user && (
+          <Link
+            to="/saved-documents"
+            onClick={() => handleNav("/saved-documents")}
+          >
+            Saved Documents
+          </Link>
+        )}
 
         {/* Mobile Auth Buttons */}
         {user ? (
