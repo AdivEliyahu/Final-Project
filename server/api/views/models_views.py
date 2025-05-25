@@ -113,10 +113,13 @@ The "entity_type" should strictly map to one of the predefined types.
 Return only the JSON output, without additional explanations or formatting.
 If an entity appears multiple times, include each occurrence with its given offsets.
 If an entity in the "entities" list is not found in the text, ignore it.
+- If the surrounding sentence contains **keywords or phrases indicating personal significance** (e.g., "born on", "birthday", "married on", "graduated", "first child born", "anniversary", "death", "retired"), set `"identifier_type": "DIRECT"`.
+- If the date is part of a generic action or unrelated (e.g., "promoted on", "random date", "conference on", "meeting on"), set `"identifier_type": "NO_MASK"`.
+- Check the surrounding sentence in the `"text"` input for **context clues** and assign the appropriate `identifier_type`.
 """
 
 
-def gpt_response(text):
+def gpt_response(text): 
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         print("Missing OpenAI API Key. Please set OPENAI_API_KEY in your environment variables.")
