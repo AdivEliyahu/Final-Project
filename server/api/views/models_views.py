@@ -17,18 +17,36 @@ def load_ner_model():
         nlp = spacy.load(model_path)
     return nlp
 
-def find_regex(text, entities):
-    email_regex = r'\b[a-zA-Z0-9.%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
-    matches = re.finditer(email_regex, text)
-    for match in matches:
-        email = match.group()
-        label = "EMAIL"
-        start_char = match.start()
-        end_char = match.end()
-        entities.append([email, label, start_char, end_char])
+
+def find_entities_by_regex(text, entities):
+    email_regex = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
+    entities = (find_regex(text, "EMAIL", email_regex)) + entities
+
+    phone_regex = r'(?:\+?\d{1,3}[ \t.-]?)?(?:\(?\d{2,4}\)?[ \t.-]?)?\d{2,4}(?:[ \t.-]?\d{2,4}){1,3}'
+    entities = (find_regex(text, "CODE", phone_regex)) + entities
+
     return entities
 
 
+def find_regex(text, label, regex):
+    result = []
+    matches = re.finditer(regex, text)
+    for match in matches:
+        email = match.group()
+        start_char = match.start()
+        end_char = match.end()
+        result.append([email, label, start_char, end_char])
+    return result
+
+def remove_duplictes_by_offset(entities):
+    seen_offset = set()
+    unique_entities = []
+    for entity in entities:
+        if (entity[2], entity[3]) not in seen_offset:
+            seen_offset.add((entity[2], entity[3]))
+            unique_entities.append(entity)
+
+    return unique_entities
 
 
 def get_entities(text):
@@ -37,7 +55,9 @@ def get_entities(text):
 
     doc = nlp(text)
     entities = [[ent.text, ent.label_, ent.start_char, ent.end_char] for ent in doc.ents]
-    entities = find_regex(text, entities)
+    entities = find_entities_by_regex(text, entities)
+
+    entities = remove_duplictes_by_offset(entities)
     output = {
         "text": text,
         "entities": entities
