@@ -22,7 +22,7 @@ def find_entities_by_regex(text, entities):
     email_regex = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
     entities = (find_regex(text, "EMAIL", email_regex)) + entities
 
-    phone_regex = r'(?:\+?\d{1,3}[ \t.-]?)?(?:\(?\d{2,4}\)?[ \t.-]?)?\d{2,4}(?:[ \t.-]?\d{2,4}){1,3}'
+    phone_regex = r'\+?\d{1,3}[-.\s]?\d{1,4}[-.\s]?\d{2,4}[-.\s]?\d{2,4}'
     entities = (find_regex(text, "CODE", phone_regex)) + entities
 
     return entities
@@ -35,18 +35,37 @@ def find_regex(text, label, regex):
         email = match.group()
         start_char = match.start()
         end_char = match.end()
-        result.append([email, label, start_char, end_char])
+        result.append([email, label, start_char, end_char, "regex"])
     return result
 
-def remove_duplictes_by_offset(entities):
-    seen_offset = set()
+def remove_duplicate_entities(entities):
     unique_entities = []
-    for entity in entities:
-        if (entity[2], entity[3]) not in seen_offset:
-            seen_offset.add((entity[2], entity[3]))
+    seen_ranges = []
+
+    # Sort by (start, -length) so longer entities come first if same start
+    sorted_entities = sorted(entities, key=lambda x: (x[2], -(x[3] - x[2])))
+
+    for entity in sorted_entities:
+        start, end = entity[2], entity[3]
+        overlap_found = False
+
+        for idx, (s, e, source) in enumerate(seen_ranges):
+            if not (end <= s or start >= e):
+                # Overlapping found
+                if entity[4] == "spacy" and source == "regex":
+                    # Replace the regex one with SpaCy
+                    unique_entities[idx] = entity
+                    seen_ranges[idx] = (start, end, "spacy")
+                # Otherwise, keep the existing one
+                overlap_found = True
+                break
+
+        if not overlap_found:
+            seen_ranges.append((start, end, entity[4]))
             unique_entities.append(entity)
 
     return unique_entities
+
 
 
 def get_entities(text):
@@ -54,10 +73,10 @@ def get_entities(text):
         load_ner_model()
 
     doc = nlp(text)
-    entities = [[ent.text, ent.label_, ent.start_char, ent.end_char] for ent in doc.ents]
+    entities = [[ent.text, ent.label_, ent.start_char, ent.end_char, "spacy"] for ent in doc.ents]
     entities = find_entities_by_regex(text, entities)
 
-    entities = remove_duplictes_by_offset(entities)
+    entities = remove_duplicate_entities(entities)
     output = {
         "text": text,
         "entities": entities
@@ -65,91 +84,70 @@ def get_entities(text):
     return json.dumps(output) 
 
     
-prompt = """
+system_prompt = """
+You are an advanced text anonymization system. Your task is to determine which of the provided named entities should be masked to protect personally identifiable information (PII).
 
-You will receive a text along with a list of named entities extracted using a SpaCy model. Each named entity includes its character offsets in the text. Your task is to return a JSON object where each named entity contains:
+You are given:
+- A full text.
+- A list of named entities. Each entity includes:
+  - "span_text": the matched text
+  - "start_offset": character index of the match in the text
+  - "end_offset": character index of the match in the text
+  - "entity_type": one of PERSON, ORG, LOC, EMAIL, CODE, DATETIME, QUANTITY, DEM, or MISC
 
-- The entity itself (word or phrase).
-- The provided character offsets (start and end positions).
-- The identity type of the entity (`DIRECT`, `NO_MASK`, or `QUASI`).
-- The entity type (`PERSON`, `CODE`, `LOC`, `ORG`, `DEM`, `DATETIME`, `QUANTITY`, `EMAIL`, `MISC`).
+Your task:
+For each entity, return an object containing:
+- "span_text"
+- "start_offset"
+- "end_offset"
+- "identifier_type": one of:
+  - "DIRECT" → must be anonymized to protect PII
+  - "QUASI" → may be identifying when combined with other info
+  - "NO_MASK" → does not require anonymization
+- "entity_type": same as input
+- "reason": a clear explanation for your classification decision
 
-### **Input format:**
-A JSON object containing:
-- `"text"`: The original text string.
-- `"entities"`: A list of lists, where each inner list contains:
-  - The named entity as a string.
-  - The entity type as a string (e.g., `PERSON`, `ORG`, `LOC`, etc.).
-  - The starting offset of the entity in the text (integer).
-  - The ending offset of the entity in the text (integer).
+### Output format:
+Return a raw JSON array (no markdown, no text around it). Example:
 
-### **Output format:**
-A JSON object with a `"named_entities"` key containing a list of objects, where each object represents a named entity with:
-- `"span_text"`: The entity itself.
-- `"start_offset"`: The provided starting index of the entity in the text.
-- `"end_offset"`: The provided ending index of the entity in the text.
-- `"identifier_type"`: One of (`DIRECT`, `NO_MASK`, `QUASI`).
-- `"entity_type"`: One of (`PERSON`, `CODE`, `LOC`, `ORG`, `DEM`, `DATETIME`, `QUANTITY`, `EMAIL`, `MISC`).
+[
+  {
+    "span_text": "Dr. Emily Zhang",
+    "start_offset": 0,
+    "end_offset": 16,
+    "identifier_type": "NO_MASK",
+    "entity_type": "PERSON",
+    "reason": "Doctor mentioned in a professional capacity, not the data subject."
+  },
+  {
+    "span_text": "john.doe@gmail.com",
+    "start_offset": 20,
+    "end_offset": 38,
+    "identifier_type": "DIRECT",
+    "entity_type": "EMAIL",
+    "reason": "Email belongs to the data subject and reveals identity."
+  },
+  {
+    "span_text": "OpenAI",
+    "start_offset": 50,
+    "end_offset": 56,
+    "identifier_type": "NO_MASK",
+    "entity_type": "ORG",
+    "reason": "Well-known public organization."
+  }
+]
 
----
+### Guidelines for identifier_type:
+- "DIRECT": use for entities that directly identify a specific individual (e.g., patient names, personal email, national ID, home address, personal dates).
+- "QUASI": use for attributes that may become identifying when combined with others (e.g., job title + location + gender).
+- "NO_MASK": use for public or professional mentions (e.g., doctors, reporters, city names, known companies).
 
-### **Example Input:**
-```json
-{
-  "text": "Alice moved to New York in 2022 and joined OpenAI as a researcher.",
-  "entities": [
-    ["Alice", "PERSON", 0, 5],
-    ["New York", "LOC", 14, 22],
-    ["2022", "DATETIME", 26, 30],
-    ["OpenAI", "ORG", 42, 48]
-  ]
-}
+### Clarifications:
+- Do NOT anonymize doctors, public officials, or authors UNLESS they are the subject of sensitive data (e.g., "Dr. Smith was treated for cancer" → DIRECT; "Dr. Smith wrote the report" → NO_MASK).
+- Do NOT hallucinate or infer new entities. Only use the provided list.
+- Do NOT wrap the output in markdown or provide any explanation text.
+- The "reason" field must be specific. Avoid vague justifications like "person's name" or "location." Use sentence context to support your classification.
 
-### **Example Output:**
-```
-{
-  "named_entities": [
-    {
-      "span_text": "Alice",
-      "start_offset": 0,
-      "end_offset": 5,
-      "identifier_type": "DIRECT",
-      "entity_type": "PERSON"
-    },
-    {
-      "span_text": "New York",
-      "start_offset": 14,
-      "end_offset": 22,
-      "identifier_type": "NO_MASK",
-      "entity_type": "LOC"
-    },
-    {
-      "span_text": "2022",
-      "start_offset": 26,
-      "end_offset": 30,
-      "identifier_type": "DIRECT",
-      "entity_type": "DATETIME"
-    },
-    {
-      "span_text": "OpenAI",
-      "start_offset": 42,
-      "end_offset": 48,
-      "identifier_type": "NO_MASK",
-      "entity_type": "ORG"
-    }
-  ]
-}
-
-### **Additional Instructions:**
-Use the provided character offsets as they are. Do not change or recalculate them.
-The "identifier_type" should be determined based on logical inference from the entity's role in the text.
-The "entity_type" should strictly map to one of the predefined types.
-Return only the JSON output, without additional explanations or formatting.
-If an entity appears multiple times, include each occurrence with its given offsets.
-If an entity in the "entities" list is not found in the text, ignore it.
-- If the surrounding sentence contains **keywords or phrases indicating personal significance** (e.g., "born on", "birthday", "married on", "graduated", "first child born", "anniversary", "death", "retired"), set `"identifier_type": "DIRECT"`.
-- If the date is part of a generic action or unrelated (e.g., "promoted on", "random date", "conference on", "meeting on"), set `"identifier_type": "NO_MASK"`.
-- Check the surrounding sentence in the `"text"` input for **context clues** and assign the appropriate `identifier_type`.
 """
 
 
@@ -165,31 +163,36 @@ def gpt_response(text):
     response = client.chat.completions.create(
         model="gpt-4o-mini-2024-07-18",
         messages=[
-            {"role": "system", "content": prompt},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": input_json}
         ]
     )
+    print(response.choices[0].message.content)
     return response.choices[0].message.content
 
 def replace_entities(gpt_response, text):
     gpt_data = json.loads(gpt_response)
-    entities = gpt_data.get("named_entities", [])
-    entities = sorted(entities, key=lambda e: e["start_offset"], reverse=True)
 
-    anonymized_text = text
+    if not isinstance(gpt_data, list):
+        raise ValueError("Expected a JSON list of entities")
+
+    entities = sorted(gpt_data, key=lambda e: e["start_offset"], reverse=True)
+
+    anonymized_text = text  # Initialize once
 
     for entity in entities:
         start = entity["start_offset"]
         end = entity["end_offset"]
         label = entity["entity_type"]
         identifier_type = entity["identifier_type"]
-        
+
         if identifier_type == "NO_MASK":
-            continue # Skip entities with NO_MASK identifier type
-        
+            continue  # Do not mask
+
         anonymized_text = anonymized_text[:start] + f"<{label}>" + anonymized_text[end:]
-    
+
     return anonymized_text
+
 
 @require_POST
 def anonymize_entities(request):
@@ -202,7 +205,8 @@ def anonymize_entities(request):
 
         gpt_output = gpt_response(text)
         anonymized_text = replace_entities(gpt_output, text)
-        return JsonResponse({"anonymized_text": anonymized_text}, status=200)
+
+        return JsonResponse({"anonymized_text":anonymized_text}, status=200)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
