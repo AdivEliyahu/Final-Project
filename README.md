@@ -1,5 +1,5 @@
 # Project 
-  Our final project, "Text Anonymization",ss tackles the tricky challenge of working with sensitive text data. We've developed a neat way to automatically identify and mask those tricky bits of personal info hiding in your text. By teaming up smart tech like Named Entity Recognition and Large Language Models, we've built a system that's both effective at keeping things private and super easy to use.
+  Our final project, "Text Anonymization", tackles the tricky challenge of working with sensitive text data. We've developed a neat way to automatically identify and mask those tricky bits of personal info hiding in your text. By teaming up smart tech like Named Entity Recognition and Large Language Models, we've built a system that's both effective at keeping things private and super easy to use.
 
 
 ## Prerequisites
