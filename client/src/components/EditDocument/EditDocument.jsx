@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import SavingModal from "../Anonymizer/SavingModal/SavingModal";
 
 function EditDocument() {
   const location = useLocation();
@@ -10,6 +12,9 @@ function EditDocument() {
   const [text, setText] = useState("");
   const [tokens, setTokens] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(null);
+  const [modal, setModal] = useState(false);
+  const [userDocs, setUserDocs] = useState([]);
+  const [csrfToken, setCsrfToken] = useState(null);
   const { user } = useAuth();
 
   const notify = (
@@ -26,6 +31,33 @@ function EditDocument() {
       theme: "colored",
     });
   };
+
+  const fetchUserDocs = useCallback(() => {
+    if (!user?.email) return;
+    axios
+      .get("http://localhost:8000/get_user_doc_names", {
+        params: { email: user.email },
+      })
+      .then((result) => {
+        setUserDocs(result.data.docNames);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch user:", error);
+      });
+  }, [user?.email]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserDocs();
+    }
+  }, [user, fetchUserDocs]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/csrf", { withCredentials: true })
+      .then(() => setCsrfToken(Cookies.get("csrftoken")))
+      .catch((error) => console.error("Error fetching CSRF token:", error));
+  }, []);
 
   useEffect(() => {
     axios
@@ -82,14 +114,12 @@ function EditDocument() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-screen-lg px-4 py-6 lg:py-8">
+    <div className="mx-auto w-full max-w-screen-lg px-4 py-6 lg:py-8 ">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 break-words">
         Document: {docName}
       </h1>
 
-      {/* layout: column on mobile, 2-cols from md+ */}
       <div className="flex flex-col gap-6 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
-        {/* text area */}
         <div className="bg-white rounded-lg shadow p-4 overflow-auto max-h-[55vh] sm:max-h-[65vh]">
           <p className="whitespace-pre-wrap leading-relaxed">
             {tokens.map((tok, idx) =>
@@ -111,7 +141,7 @@ function EditDocument() {
         </div>
 
         {/* replacements list */}
-        <div className="flex flex-wrap gap-2 md:flex-col md:gap-2 md:w-48 border-2 rounded-md py-3 px-4 shadow-lg overflow-x-auto md:overflow-visible">
+        <div className="flex flex-wrap gap-2 md:flex-col md:gap-2 md:w-48 py-3 px-4 items-left overflow-x-auto md:overflow-visible">
           <h2 className="w-full text-lg font-semibold mb-1 md:mb-2">
             Replacements
           </h2>
@@ -119,13 +149,31 @@ function EditDocument() {
             <button
               key={tag}
               onClick={() => handleReplace(tag)}
-              className={`px-3 py-1 border rounded-full text-sm ${color} hover:bg-opacity-80 transition-colors whitespace-nowrap`}
+              className={`border ${color} whitespace-nowrap text-xs cursor-pointer font-semibold px-3 py-1 rounded-full w-fit`}
             >
               {tag}
             </button>
           ))}
         </div>
       </div>
+      <div className="flex mt-8">
+        <button
+          onClick={() => setModal((prev) => !prev)}
+          className="bg-[#FB8500] hover:bg-[#ffb347] text-white font-semibold py-2 px-8 rounded-full shadow transition-colors duration-200 "
+        >
+          Save
+        </button>
+      </div>
+      {modal && (
+        <SavingModal
+          setModal={setModal}
+          anonymizedText={text}
+          notify={notify}
+          csrfToken={csrfToken}
+          userDocs={userDocs}
+          fetchUserDocs={fetchUserDocs}
+        />
+      )}
     </div>
   );
 }
