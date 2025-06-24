@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   TbLayoutSidebarLeftExpand,
   TbLayoutSidebarRightExpand,
@@ -9,6 +10,7 @@ const Sidebar = ({ userDocs }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showContent, setShowContent] = useState(true);
   const { user } = useAuth();
+  const nav = useNavigate();
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -58,7 +60,11 @@ const Sidebar = ({ userDocs }) => {
                     userDocs.map((doc, index) => (
                       <li
                         key={index}
-                        onClick={() => alert("nav to doc")}
+                        onClick={() =>
+                          nav(`/edit/${encodeURIComponent(doc[0])}`, {
+                            state: { docName: doc[0], content: doc[1] },
+                          })
+                        }
                         className="flex items-center gap-3 cursor-pointer rounded-lg p-3 hover:bg-gray-100 transition border border-gray-100"
                       >
                         {/* Doc Icon */}
