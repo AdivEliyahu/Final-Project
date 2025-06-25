@@ -45,7 +45,7 @@ function EditDocument() {
       .catch((error) => {
         console.error("Failed to fetch user:", error);
       });
-  }, [user?.email]);
+  }, [user.email]);
 
   useEffect(() => {
     if (user) {
@@ -135,7 +135,7 @@ function EditDocument() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-screen-lg px-4 py-6 lg:py-8 ">
+    <div className="mx-auto w-full max-w-screen-lg px-4 py-6 lg:py-8">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 break-words">
         Document: {docName}
       </h1>
@@ -159,18 +159,13 @@ function EditDocument() {
               )
             )}
           </p>
+
+          {/* Tooltip positioned at bottom right of white container */}
           <div
-            className="fixed bottom-2 right-3 z-30"
-            style={{
-              position: "sticky",
-              bottom: "1rem",
-              float: "right",
-              marginTop: "-2.5rem",
-            }}
+            className="absolute bottom-2 right-3 z-30"
             onMouseEnter={() => setHelpMessage(true)}
             onMouseLeave={() => setHelpMessage(false)}
           >
-            {/* lucide icons question mark has an issue therefore question mark svg*/}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -211,6 +206,7 @@ function EditDocument() {
           ))}
         </div>
       </div>
+
       <div className="flex mt-8">
         <button
           onClick={() => setModal((prev) => !prev)}
@@ -219,6 +215,7 @@ function EditDocument() {
           Save
         </button>
       </div>
+
       {modal && (
         <SavingModal
           setModal={setModal}
