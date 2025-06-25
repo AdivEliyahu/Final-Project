@@ -142,7 +142,7 @@ function EditDocument() {
 
       <div className="flex flex-col gap-6 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
         <div className="bg-white rounded-lg shadow p-4 overflow-auto max-h-[55vh] sm:max-h-[65vh] relative">
-          <p className="whitespace-pre-wrap leading-relaxed">
+          <p className="whitespace-pre-wrap leading-relaxed pb-12">
             {tokens.map((tok, idx) =>
               tok.isWord ? (
                 <span
@@ -160,11 +160,17 @@ function EditDocument() {
             )}
           </p>
           <div
-            className="sticky right-0 bottom-0 px-1 py-1 place-items-end"
+            className="fixed bottom-2 right-3 z-30"
+            style={{
+              position: "sticky",
+              bottom: "1rem",
+              float: "right",
+              marginTop: "-2.5rem",
+            }}
             onMouseEnter={() => setHelpMessage(true)}
             onMouseLeave={() => setHelpMessage(false)}
           >
-            {/* lucide icons question mark has an issue therefore quesion mark svg*/}
+            {/* lucide icons question mark has an issue therefore question mark svg*/}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -175,14 +181,14 @@ function EditDocument() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-circle-question-mark-icon lucide-circle-question-mark"
+              className="lucide lucide-circle-question-mark-icon lucide-circle-question-mark cursor-pointer"
             >
               <circle cx="12" cy="12" r="10" />
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
               <path d="M12 17h.01" />
             </svg>
             {helpMessage && (
-              <div className="bg-[#f5a73b] text-white absolute bottom-6 right-6 z-20 w-[220px] md:w-[350px] px-3 py-2 rounded-lg animate-fadeIn">
+              <div className="bg-[#f5a73b] text-white absolute bottom-8 right-0 z-20 w-[220px] md:w-[350px] px-3 py-2 rounded-lg animate-fadeIn">
                 Click a word to mask it, then choose the best replacement tag
                 from the list.
               </div>
