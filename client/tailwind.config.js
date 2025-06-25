@@ -8,9 +8,14 @@ module.exports = {
           "0%": { transform: "rotateY(-15deg)" },
           "100%": { transform: "rotateY(15deg)" },
         },
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
       },
       animation: {
         rotateY: "rotateY 2s infinite alternate ease-in-out",
+        fadeIn: "fadeIn 0.2s ease-in forwards",
       },
     },
   },

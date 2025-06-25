@@ -15,6 +15,7 @@ function EditDocument() {
   const [modal, setModal] = useState(false);
   const [userDocs, setUserDocs] = useState([]);
   const [csrfToken, setCsrfToken] = useState(null);
+  const [helpMessage, setHelpMessage] = useState(false);
   const { user } = useAuth();
 
   const notify = (
@@ -78,7 +79,27 @@ function EditDocument() {
       value: t,
       isWord: !/^\s+$/.test(t), //non space
     }));
-    setTokens(newTokens);
+
+    // Process tokens to separate punctuation
+    const processedTokens = [];
+    newTokens.forEach((token) => {
+      if (token.isWord && /[,.]$/.test(token.value)) {
+        // Add word without punctuation
+        processedTokens.push({
+          value: token.value.slice(0, -1),
+          isWord: true,
+        });
+        // Add punctuation as separate token
+        processedTokens.push({
+          value: token.value.slice(-1),
+          isWord: false,
+        });
+      } else {
+        processedTokens.push(token);
+      }
+    });
+
+    setTokens(processedTokens);
     setSelectedIdx(null);
   }, [text]);
 
@@ -87,7 +108,7 @@ function EditDocument() {
       ["<PERSON>", "bg-amber-100   text-amber-800   border-amber-400"],
       ["<ORG>", "bg-emerald-100 text-emerald-800 border-emerald-400"],
       ["<LOCATION>", "bg-sky-100     text-sky-800     border-sky-400"],
-      ["<DATE>", "bg-violet-100  text-violet-800  border-violet-400"],
+      ["<DATETIME>", "bg-violet-100  text-violet-800  border-violet-400"],
       ["<PHONE>", "bg-rose-100    text-rose-800    border-rose-400"],
       ["<EMAIL>", "bg-cyan-100    text-cyan-800    border-cyan-400"],
       ["<CODE>", "bg-lime-100    text-lime-800    border-lime-400"],
@@ -120,14 +141,14 @@ function EditDocument() {
       </h1>
 
       <div className="flex flex-col gap-6 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
-        <div className="bg-white rounded-lg shadow p-4 overflow-auto max-h-[55vh] sm:max-h-[65vh]">
+        <div className="bg-white rounded-lg shadow p-4 overflow-auto max-h-[55vh] sm:max-h-[65vh] relative">
           <p className="whitespace-pre-wrap leading-relaxed">
             {tokens.map((tok, idx) =>
               tok.isWord ? (
                 <span
                   key={idx}
                   onClick={() => handleWordClick(idx)}
-                  className={`cursor-pointer px-[0.15rem] transition-colors ${
+                  className={`cursor-pointer px-[0.1rem] py-[0.2rem] transition-colors rounded-xl ${
                     idx === selectedIdx ? "bg-[#FB8500]" : ""
                   }`}
                 >
@@ -138,9 +159,37 @@ function EditDocument() {
               )
             )}
           </p>
+          <div
+            className="sticky right-0 bottom-0 px-1 py-1 place-items-end"
+            onMouseEnter={() => setHelpMessage(true)}
+            onMouseLeave={() => setHelpMessage(false)}
+          >
+            {/* lucide icons question mark has an issue therefore quesion mark svg*/}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-circle-question-mark-icon lucide-circle-question-mark"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <path d="M12 17h.01" />
+            </svg>
+            {helpMessage && (
+              <div className="bg-[#f5a73b] text-white absolute bottom-6 right-6 z-20 w-[220px] md:w-[350px] px-3 py-2 rounded-lg animate-fadeIn">
+                Click a word to mask it, then choose the best replacement tag
+                from the list.
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* replacements list */}
         <div className="flex flex-wrap gap-2 md:flex-col md:gap-2 md:w-48 py-3 px-4 items-left overflow-x-auto md:overflow-visible">
           <h2 className="w-full text-lg font-semibold mb-1 md:mb-2">
             Replacements
