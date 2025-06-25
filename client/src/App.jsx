@@ -9,6 +9,7 @@ import Navbar from "./components/shared/Navbar";
 import Footer from "./components/shared/Footer";
 import Anonymizer from "./components/Anonymizer/Anonymizer";
 import SavedDocuments from "./components/SavedDocuments/SavedDocuments";
+import EditDocument from "./components/EditDocument/EditDocument";
 import { ToastContainer } from "react-toastify";
 
 import "./App.css";
@@ -27,6 +28,10 @@ const App = () => {
           <Route
             path="/saved-documents"
             element={<ProtectedRoute element={<SavedDocuments />} />}
+          />
+          <Route
+            path="/edit/:docName"
+            element={<ProtectedRoute element={<EditDocument />} />}
           />
         </Routes>
         <ToastContainer />

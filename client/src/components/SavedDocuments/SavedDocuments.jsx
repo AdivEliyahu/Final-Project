@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -11,7 +12,7 @@ function SavedDocuments() {
   const docsPerPage = 5;
   const { user } = useAuth();
   const [csrfToken, setCsrfToken] = useState(null);
-
+  const nav = useNavigate();
   useEffect(() => {
     axios
       .get("http://localhost:8000/csrf", { withCredentials: true })
@@ -145,7 +146,14 @@ function SavedDocuments() {
                       : "flex items-center p-4 rounded-lg hover:shadow-lg md:py-4 lg:py-6 transition hover:bg-stone-200"
                   }
                 >
-                  <div className="w-1/3 text-teal-800 font-medium truncate text-[#15143966] pr-2 font-semibold">
+                  <div
+                    onClick={() =>
+                      nav(`/edit/${encodeURIComponent(doc[0])}`, {
+                        state: { docName: doc[0], content: doc[1] },
+                      })
+                    }
+                    className="w-1/3 text-teal-800 truncate text-[#15143966] pr-2 font-semibold cursor-pointer"
+                  >
                     {doc[0]}
                   </div>
                   <div className="w-1/3 text-center text-[#235F6B]">
