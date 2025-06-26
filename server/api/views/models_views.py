@@ -93,7 +93,7 @@ You are given:
   - "span_text": the matched text
   - "start_offset": character index of the match in the text
   - "end_offset": character index of the match in the text
-  - "entity_type": one of PERSON, ORG, LOC, EMAIL, CODE, DATETIME, QUANTITY, DEM, or MISC
+  - "entity_type": one of PERSON, ORG, LOC, EMAIL, CODE, DATETIME, DEM, or MISC
 
 Your task:
 For each entity, return an object containing:
