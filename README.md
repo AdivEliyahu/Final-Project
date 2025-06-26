@@ -76,3 +76,29 @@ Before starting the project, make sure you have the following tools:
 ## Running Both Servers
 
 Once both the server and client are running, the Django API should be accessible at `http://127.0.0.1:8000` (or another port if configured differently), and the React client will be running at `http://localhost:3000`.
+
+## Screenshots
+
+1. Anonymizer Workspace  
+![Anonymizer Workspace](https://i.imgur.com/G2GQyzH.png)
+
+* The primary interface where users upload documents and preview anonymized output in real time before committing changes.
+___
+
+2. In-Place Entity Editor  
+![In-Place Entity Editor](https://i.imgur.com/EPM6MZG.png)
+
+* A focused editing view that lists all detected entities, allowing reviewers to edit and add masking as needed.
+___
+
+3. Document Manager  
+![Document Manager](https://i.imgur.com/2CRzZs5.png)
+
+* A simple dashboard that stores up to ten documents per user, displaying status, creation date, and one-click access to edit, remove and download.
+___
+
+4. Research & Development Roadmap  
+![Research & Development Roadmap](https://i.imgur.com/jGFODL8.png)
+
+* A high-level timeline summarizing our R&D milestones—from dataset preparation and model fine-tuning to validation, optimization, and deployment.
+
