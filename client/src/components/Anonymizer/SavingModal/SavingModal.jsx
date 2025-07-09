@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 function SavingModal({
   setModal,
@@ -14,10 +15,18 @@ function SavingModal({
   const { user } = useAuth();
   const [docName, setDocName] = useState("");
   const [userDocNames, setUserDocNames] = useState([]);
-
+  const { docName: urlDocName } = useParams();
   useEffect(() => {
     setUserDocNames(userDocs.map((item) => item[0]));
   }, [userDocs]);
+
+  useEffect(() => {
+    if (urlDocName) {
+      const decoded = decodeURIComponent(urlDocName);
+      console.log("Doc name from URL →", decoded);
+      setDocName(decoded);
+    }
+  }, [urlDocName]);
 
   const handleSave = () => {
     if (docName.length === 0) {
